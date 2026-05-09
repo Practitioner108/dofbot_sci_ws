@@ -10,7 +10,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/base_link.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/base_link.STL"/>
             </geometry>
             <material name="grey_material">
                 <color rgba="0.7 0.7 0.7 1"/>
@@ -18,23 +18,21 @@
         </visual>
         
         <collision>
-            <origin xyz="0 -0.07 0.01" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.135 0.26 0.02"/>
+                <mesh filename="package://dofbot_description/meshes/collision/base_link_col_1.stl"/>
             </geometry>
         </collision>
-        
         <collision>
-            <origin xyz="0 0 0.032" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <cylinder radius="0.035" length="0.064"/>
+                <mesh filename="package://dofbot_description/meshes/collision/base_link_col_2.stl"/>
             </geometry>
         </collision>
-        
         <collision>
-            <origin xyz="0 -0.15 0.045" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.09 0.10 0.05"/>
+                <mesh filename="package://dofbot_description/meshes/collision/base_link_col_3.stl"/>
             </geometry>
         </collision>
     </link>
@@ -49,16 +47,16 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/link1.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/link1.STL"/>
             </geometry>
             <material name="green_material">
                 <color rgba="0 0.7 0 1"/>
             </material>
         </visual>
         <collision>
-            <origin xyz="0 0 0.02" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <cylinder radius="0.035" length="0.05"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link1_col.stl"/>
             </geometry>
         </collision>
     </link>
@@ -68,7 +66,7 @@
         <parent link="base_link"/>
         <child link="link1"/>
         <axis xyz="0 0 1"/>
-        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14"/>
         <dynamics damping="0.1" friction="0.05"/>
     </joint>
 
@@ -82,16 +80,16 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/link2.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/link2.STL"/>
             </geometry>
             <material name="grey_material">
                 <color rgba="0.7 0.7 0.7 1"/>
             </material>
         </visual>
         <collision>
-            <origin xyz="-0.041 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.083 0.045 0.045"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link2_col.stl"/>
             </geometry>
         </collision>
     </link>
@@ -101,7 +99,7 @@
         <parent link="link1"/>
         <child link="link2"/>
         <axis xyz="0 0 1"/>
-        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14"/>
         <dynamics damping="0.1" friction="0.05"/>
     </joint>
 
@@ -115,16 +113,16 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/link3.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/link3.STL"/>
             </geometry>
             <material name="green_material">
                 <color rgba="0 0.7 0 1"/>
             </material>
         </visual>
         <collision>
-            <origin xyz="-0.041 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.083 0.045 0.045"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link3_col.stl"/>
             </geometry>
         </collision>
     </link>
@@ -134,7 +132,7 @@
         <parent link="link2"/>
         <child link="link3"/>
         <axis xyz="0 0 1"/>
-        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14"/>
         <dynamics damping="0.1" friction="0.05"/>
     </joint>
 
@@ -148,16 +146,22 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/link4.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/link4.STL"/>
             </geometry>
             <material name="grey_material">
                 <color rgba="0.7 0.7 0.7 1"/>
             </material>
         </visual>
         <collision>
-            <origin xyz="-0.04 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="0.09 0.06 0.06"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link4_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/link4_col_2.stl"/>
             </geometry>
         </collision>
     </link>
@@ -167,30 +171,36 @@
         <parent link="link3"/>
         <child link="link4"/>
         <axis xyz="0 0 1"/>
-        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14"/>
         <dynamics damping="0.1" friction="0.05"/>
     </joint>
 
     <link name="link5">
         <inertial>
-            <mass value="0.139894"/>
-            <origin xyz="0.002189 0.013960 0.037348" rpy="0 0 0"/>
-            <inertia ixx="0.00007921" ixy="-0.00000146" ixz="0.00000108"
-                     iyy="0.00007630" iyz="0.00000837" izz="0.00005397"/>
+            <mass value="0.091378"/>
+            <origin xyz="0.002622 0.017797 0.030802" rpy="0 0 0"/>
+            <inertia ixx="0.00002550" ixy="-0.00000057" ixz="-0.00000065"
+                     iyy="0.00002286" iyz="-0.00000404" izz="0.00002965"/>
         </inertial>
         <visual>
             <origin xyz="0 0 -0.11" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/link5.STL"/>
+                <mesh filename="package://dofbot_description/meshes/visual/link5_flange.stl"/>
             </geometry>
             <material name="white_material">
                 <color rgba="1 1 1 1"/>
             </material>
         </visual>
         <collision>
-            <origin xyz="0 0 -0.07" rpy="0 0 0"/>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
             <geometry>
-                <box size="0.06 0.10 0.14"/>
+                <mesh filename="package://dofbot_description/meshes/collision/flange_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/flange_col_2.stl"/>
             </geometry>
         </collision>
     </link>
@@ -200,8 +210,99 @@
         <parent link="link4"/>
         <child link="link5"/>
         <axis xyz="0 0 1"/>
-        <limit lower="-1.5708" upper="3.1416" effort="0.6" velocity="1"/>
+        <limit lower="-1.5708" upper="3.1416" effort="0.6" velocity="3.14"/>
         <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="left_finger">
+        <inertial>
+            <mass value="0.006329"/>
+            <origin xyz="0.016595 -0.001857 0.062980" rpy="0 0 0"/>
+            <inertia ixx="0.00000356" ixy="-0.00000001" ixz="-0.00000037"
+                     iyy="0.00000378" iyz="-0.00000016" izz="0.00000034"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/visual/left_finger.stl"/>
+            </geometry>
+            <material name="white_material">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_2.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_3.stl"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="left_finger_joint" type="prismatic">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="link5"/>
+        <child link="left_finger"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-0.03" upper="0.03" effort="5.0" velocity="0.5"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="right_finger">
+        <inertial>
+            <mass value="0.005998"/>
+            <origin xyz="-0.016626 -0.001230 0.064650" rpy="0 0 0"/>
+            <inertia ixx="0.00000330" ixy="0.00000002" ixz="0.00000032"
+                     iyy="0.00000348" iyz="-0.00000022" izz="0.00000032"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/visual/right_finger.stl"/>
+            </geometry>
+            <material name="white_material">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_2.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_3.stl"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="right_finger_joint" type="prismatic">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="link5"/>
+        <child link="right_finger"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-0.03" upper="0.03" effort="5.0" velocity="0.5"/>
+        <dynamics damping="0.1" friction="0.05"/>
+        <mimic joint="left_finger_joint" multiplier="-1.0" offset="0.0"/>
     </joint>
 
     <transmission name="trans_joint1">
@@ -259,6 +360,17 @@
         </actuator>
     </transmission>
 
+    <transmission name="trans_left_finger">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_finger_joint">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_left_finger">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
     <gazebo reference="base_link">
         <material>Gazebo/Grey</material>
     </gazebo>
@@ -275,6 +387,12 @@
         <material>Gazebo/Grey</material>
     </gazebo>
     <gazebo reference="link5">
+        <material>Gazebo/White</material>
+    </gazebo>
+    <gazebo reference="left_finger">
+        <material>Gazebo/White</material>
+    </gazebo>
+    <gazebo reference="right_finger">
         <material>Gazebo/White</material>
     </gazebo>
 

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="dofbot">
+    <link name="base_link">
+        <inertial>
+            <mass value="0.369776"/>
+            <origin xyz="0.000065 -0.048265 0.021267" rpy="0 0 0"/>
+            <inertia ixx="0.00206195" ixy="-0.00000069" ixz="-0.00000073"
+                     iyy="0.00062736" iyz="-0.00032039" izz="0.00210250"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/base_link.STL"/>
+            </geometry>
+            <material name="grey_material">
+                <color rgba="0.7 0.7 0.7 1"/>
+            </material>
+        </visual>
+        
+        <collision>
+            <origin xyz="0 -0.07 0.01" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.135 0.26 0.02"/>
+            </geometry>
+        </collision>
+        
+        <collision>
+            <origin xyz="0 0 0.032" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.035" length="0.064"/>
+            </geometry>
+        </collision>
+        
+        <collision>
+            <origin xyz="0 -0.15 0.045" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.09 0.10 0.05"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="link1">
+        <inertial>
+            <mass value="0.052312"/>
+            <origin xyz="0.000003 0.000000 0.018653" rpy="0 0 0"/>
+            <inertia ixx="0.00001691" ixy="0.00000000" ixz="-0.00000010"
+                     iyy="0.00002055" iyz="-0.00000000" izz="0.00001885"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/link1.STL"/>
+            </geometry>
+            <material name="green_material">
+                <color rgba="0 0.7 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.02" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.035" length="0.05"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="joint1" type="revolute">
+        <origin xyz="0 0 0.064" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="link1"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="link2">
+        <inertial>
+            <mass value="0.085210"/>
+            <origin xyz="-0.024890 -0.002259 -0.000080" rpy="0 0 0"/>
+            <inertia ixx="0.00001575" ixy="0.00000237" ixz="0.00000041"
+                     iyy="0.00007182" iyz="-0.00000002" izz="0.00006650"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/link2.STL"/>
+            </geometry>
+            <material name="grey_material">
+                <color rgba="0.7 0.7 0.7 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.041 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.083 0.045 0.045"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="joint2" type="revolute">
+        <origin xyz="0 0 0.0435" rpy="0 1.5708 0"/>
+        <parent link="link1"/>
+        <child link="link2"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="link3">
+        <inertial>
+            <mass value="0.085210"/>
+            <origin xyz="-0.024890 -0.002259 -0.000650" rpy="0 0 0"/>
+            <inertia ixx="0.00001575" ixy="0.00000237" ixz="0.00000039"
+                     iyy="0.00007182" iyz="-0.00000003" izz="0.00006650"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/link3.STL"/>
+            </geometry>
+            <material name="green_material">
+                <color rgba="0 0.7 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.041 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.083 0.045 0.045"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="joint3" type="revolute">
+        <origin xyz="-0.08285 0 0" rpy="0 0 0"/>
+        <parent link="link2"/>
+        <child link="link3"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="link4">
+        <inertial>
+            <mass value="0.160515"/>
+            <origin xyz="-0.038494 -0.004349 -0.000785" rpy="0 0 0"/>
+            <inertia ixx="0.00007571" ixy="0.00000562" ixz="-0.00000005"
+                     iyy="0.00010711" iyz="0.00000063" izz="0.00016261"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/link4.STL"/>
+            </geometry>
+            <material name="grey_material">
+                <color rgba="0.7 0.7 0.7 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.04 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.09 0.06 0.06"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="joint4" type="revolute">
+        <origin xyz="-0.08285 0 0" rpy="0 0 0"/>
+        <parent link="link3"/>
+        <child link="link4"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="1"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <link name="link5">
+        <inertial>
+            <mass value="0.139894"/>
+            <origin xyz="0.002189 0.013960 0.037348" rpy="0 0 0"/>
+            <inertia ixx="0.00007921" ixy="-0.00000146" ixz="0.00000108"
+                     iyy="0.00007630" iyz="0.00000837" izz="0.00005397"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 -0.11" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/link5.STL"/>
+            </geometry>
+            <material name="white_material">
+                <color rgba="1 1 1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.07" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.06 0.10 0.14"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="joint5" type="revolute">
+        <origin xyz="-0.18385 -0.00215 -0.000605" rpy="0 -1.5708 0"/>
+        <parent link="link4"/>
+        <child link="link5"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="3.1416" effort="0.6" velocity="1"/>
+        <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+
+    <transmission name="trans_joint1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint1">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_joint1">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_joint2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint2">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_joint2">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_joint3">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint3">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_joint3">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_joint4">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint4">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_joint4">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_joint5">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint5">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_joint5">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <gazebo reference="base_link">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="link1">
+        <material>Gazebo/Green</material>
+    </gazebo>
+    <gazebo reference="link2">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="link3">
+        <material>Gazebo/Green</material>
+    </gazebo>
+    <gazebo reference="link4">
+        <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="link5">
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+</robot>
