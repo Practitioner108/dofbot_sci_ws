@@ -1,0 +1,9 @@
+<library path="lib/libdofbot_kinematics">
+    <class name="dofbot_kinematics/DofbotIKPlugin"
+           type="dofbot_kinematics::DofbotIKPlugin"
+           base_class_type="kinematics::KinematicsBase">
+        <description>
+            Custom inverse kinematics plugin for 5-DOF robotic arm.
+        </description>
+    </class>
+</library>
