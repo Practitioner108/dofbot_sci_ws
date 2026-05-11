@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   tf2_eigen
   tf2_geometry_msgs
+  moveit_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +109,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
   LIBRARIES dofbot_kinematics
-  CATKIN_DEPENDS moveit_core pluginlib roscpp tf2_eigen tf2_geometry_msgs
+  CATKIN_DEPENDS roscpp pluginlib moveit_core moveit_msgs geometry_msgs tf2_geometry_msgs tf2_eigen
 #  DEPENDS system_lib
 )
 
