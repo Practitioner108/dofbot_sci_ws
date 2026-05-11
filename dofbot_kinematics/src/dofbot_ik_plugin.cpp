@@ -13,6 +13,7 @@
 #include <limits>
 #include <algorithm>
 #include <map>
+#include <memory> // ✅ 引入智能指针支持
 
 namespace dofbot_kinematics {
 
@@ -206,9 +207,16 @@ public:
             }
         }
         
-        // 【工业规范级挂载】：利用 RobotState 提取任意自定义 TCP 夹具产生的偏置并反求变换阵
-        moveit::core::RobotState state(robot_model);
+        // =========================================================================================
+        // ✅ 解决 Noetic 编译报错的核心修复：利用空删除器 (Empty Deleter) 技巧
+        // 由于 RobotState 在 Noetic 中强行要求 shared_ptr，我们将 robot_model 引用包装起来，
+        // 并传入空的 Lambda 表达式作为 Deleter，保证智能指针结束时不会误删除 MoveIt 正在使用的内存。
+        // =========================================================================================
+        std::shared_ptr<const moveit::core::RobotModel> robot_model_ptr(&robot_model, [](const moveit::core::RobotModel*){});
+        moveit::core::RobotState state(robot_model_ptr);
         state.setToDefaultValues();
+
+        // 提取任意自定义 TCP 夹具产生的偏置并反求变换阵
         if (!tip_frames_.empty()) {
             Eigen::Isometry3d T_link5 = state.getGlobalLinkTransform("link5");
             Eigen::Isometry3d T_tip = state.getGlobalLinkTransform(tip_frames_[0]);
@@ -217,7 +225,7 @@ public:
             tip_to_wrist_offset_ = Eigen::Isometry3d::Identity();
         }
 
-        ROS_INFO_NAMED("dofbot_ik", "DOFBOT Exact Analytic IK Plugin Final V5 Initialized.");
+        ROS_INFO_NAMED("dofbot_ik", "DOFBOT Exact Analytic IK Plugin Final V6 Initialized.");
         ROS_WARN_ONCE_NAMED("dofbot_ik", "\033[1;33m[IMPORTANT] Please ensure 'position_only_ik: True' is set in your kinematics.yaml for this 5-DOF arm!\033[0m");
 
         return true;
