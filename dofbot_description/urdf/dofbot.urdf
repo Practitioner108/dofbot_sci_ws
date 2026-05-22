@@ -89,7 +89,13 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/collision/link2_col.stl"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link2_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/link2_col_2.stl"/>
             </geometry>
         </collision>
     </link>
@@ -122,7 +128,13 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://dofbot_description/meshes/collision/link3_col.stl"/>
+                <mesh filename="package://dofbot_description/meshes/collision/link3_col_1.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/link3_col_2.stl"/>
             </geometry>
         </collision>
     </link>
@@ -162,6 +174,12 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <mesh filename="package://dofbot_description/meshes/collision/link4_col_2.stl"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://dofbot_description/meshes/collision/link4_col_3.stl"/>
             </geometry>
         </collision>
     </link>

@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
   <!-- CHOMP Plugin for MoveIt -->
   <arg name="planning_plugin" value="chomp_interface/CHOMPPlanner" />

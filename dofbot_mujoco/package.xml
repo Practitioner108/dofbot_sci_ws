@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dofbot_mujoco</name>
+  <version>0.1.0</version>
+  <description>MuJoCo simulation bringup for the DOFBOT 5-DOF robotic arm</description>
+
+  <maintainer email="3954058022@qq.com">Tu Zhichao</maintainer>
+  <author email="3954058022@qq.com">Tu Zhichao</author>
+
+  <license>Apache-2.0</license>
+
+  <url type="repository">https://github.com/Practitioner108/dofbot_sci_ws</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>dofbot_description</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <export>
+  </export>
+</package>

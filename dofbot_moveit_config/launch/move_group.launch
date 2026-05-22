@@ -1,10 +1,11 @@
+<?xml version="1.0"?>
 <launch>
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
   <arg unless="$(arg debug)" name="launch_prefix" value="" />
   <arg     if="$(arg debug)" name="launch_prefix"
-           value="gdb -x $(find dofbot_moveit_config)/launch/gdb_settings.gdb --ex run --args" />
+           value="gdb --ex run --args" />
 
   <!-- Verbose Mode Option -->
   <arg name="info" default="$(arg debug)" />
@@ -58,7 +59,7 @@
     </include>
 
     <!-- Pilz Industrial Motion-->
-    <include ns="pilz_industrial_motion_planner" file="$(find moveit_resources_prbt_moveit_config)/launch/planning_pipeline.launch.xml">
+    <include ns="pilz_industrial_motion_planner" file="$(find dofbot_moveit_config)/launch/planning_pipeline.launch.xml">
       <arg name="pipeline" value="pilz_industrial_motion_planner" />
     </include>
 

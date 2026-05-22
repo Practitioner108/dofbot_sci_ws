@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="dofbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="dofbot_inertial" params="mass origin_xyz origin_rpy ixx iyy izz ixy ixz iyz">
+    <inertial>
+      <mass value="${mass}" />
+      <origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
+      <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+               iyy="${iyy}" iyz="${iyz}" izz="${izz}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="dofbot_visual" params="mesh_file origin_xyz origin_rpy material_name">
+    <visual>
+      <origin xyz="${origin_xyz}" rpy="${origin_rpy}" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/visual/${mesh_file}" />
+      </geometry>
+      <material name="${material_name}" />
+    </visual>
+  </xacro:macro>
+
+  <material name="grey_material">
+    <color rgba="0.7 0.7 0.7 1" />
+  </material>
+  <material name="green_material">
+    <color rgba="0 0.7 0 1" />
+  </material>
+  <material name="white_material">
+    <color rgba="1 1 1 1" />
+  </material>
+
+  <link name="base_link">
+    <xacro:dofbot_inertial mass="0.369776"
+      origin_xyz="0.000065 -0.048265 0.021267" origin_rpy="0 0 0"
+      ixx="0.00206195" ixy="-0.00000069" ixz="-0.00000073"
+      iyy="0.00062736" iyz="-0.00032039" izz="0.00210250" />
+    <xacro:dofbot_visual mesh_file="base_link.stl" origin_xyz="0 0 0" origin_rpy="0 0 0" material_name="grey_material" />
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/base_link_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/base_link_col_2.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/base_link_col_3.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_rotation_joint" type="revolute">
+    <origin xyz="0 0 0.064" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="base_rotation_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="base_rotation_link">
+    <xacro:dofbot_inertial mass="0.052312"
+      origin_xyz="0.000003 0.000000 0.018653" origin_rpy="0 0 0"
+      ixx="0.00001691" ixy="0.00000000" ixz="-0.00000010"
+      iyy="0.00002055" iyz="0.00000000" izz="0.00001885" />
+    <xacro:dofbot_visual mesh_file="link1.stl" origin_xyz="0 0 0" origin_rpy="0 0 0" material_name="green_material" />
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link1_col.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="upper_arm_joint" type="revolute">
+    <origin xyz="0 0 0.0435" rpy="0 1.5708 0" />
+    <parent link="base_rotation_link" />
+    <child link="upper_arm_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="upper_arm_link">
+    <xacro:dofbot_inertial mass="0.085210"
+      origin_xyz="-0.024890 -0.002259 -0.000080" origin_rpy="0 0 0"
+      ixx="0.00001575" ixy="0.00000237" ixz="0.00000041"
+      iyy="0.00007182" iyz="-0.00000002" izz="0.00006650" />
+    <xacro:dofbot_visual mesh_file="link2.stl" origin_xyz="0 0 0" origin_rpy="0 0 0" material_name="grey_material" />
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link2_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link2_col_2.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="forearm_joint" type="revolute">
+    <origin xyz="-0.08285 0 0" rpy="0 0 0" />
+    <parent link="upper_arm_link" />
+    <child link="forearm_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="forearm_link">
+    <xacro:dofbot_inertial mass="0.085210"
+      origin_xyz="-0.024890 -0.002259 -0.000650" origin_rpy="0 0 0"
+      ixx="0.00001575" ixy="0.00000237" ixz="0.00000039"
+      iyy="0.00007182" iyz="-0.00000003" izz="0.00006650" />
+    <xacro:dofbot_visual mesh_file="link3.stl" origin_xyz="0 0 0" origin_rpy="0 0 0" material_name="green_material" />
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link3_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link3_col_2.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_pitch_joint" type="revolute">
+    <origin xyz="-0.08285 0 0" rpy="0 0 0" />
+    <parent link="forearm_link" />
+    <child link="wrist_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="1.5708" effort="1.5" velocity="3.14" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="wrist_link">
+    <xacro:dofbot_inertial mass="0.160515"
+      origin_xyz="-0.038494 -0.004349 -0.000785" origin_rpy="0 0 0"
+      ixx="0.00007571" ixy="0.00000562" ixz="-0.00000005"
+      iyy="0.00010711" iyz="0.00000063" izz="0.00016261" />
+    <xacro:dofbot_visual mesh_file="link4.stl" origin_xyz="0 0 0" origin_rpy="0 0 0" material_name="grey_material" />
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link4_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link4_col_2.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/link4_col_3.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wrist_roll_joint" type="revolute">
+    <origin xyz="-0.18385 -0.00215 -0.000605" rpy="0 -1.5708 0" />
+    <parent link="wrist_link" />
+    <child link="wrist_roll_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="3.1416" effort="0.6" velocity="3.14" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="wrist_roll_link">
+    <xacro:dofbot_inertial mass="0.091378"
+      origin_xyz="0.002622 0.017797 0.030802" origin_rpy="0 0 0"
+      ixx="0.00002550" ixy="-0.00000057" ixz="-0.00000065"
+      iyy="0.00002286" iyz="-0.00000404" izz="0.00002965" />
+    <xacro:dofbot_visual mesh_file="link5_flange.stl" origin_xyz="0 0 -0.11" origin_rpy="0 0 0" material_name="white_material" />
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/flange_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/flange_col_2.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_left_joint" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="wrist_roll_link" />
+    <child link="gripper_left_link" />
+    <axis xyz="1 0 0" />
+    <limit lower="-0.03" upper="0.03" effort="5.0" velocity="0.5" />
+    <dynamics damping="0.1" friction="0.05" />
+  </joint>
+
+  <link name="gripper_left_link">
+    <xacro:dofbot_inertial mass="0.006329"
+      origin_xyz="0.016595 -0.001857 0.062980" origin_rpy="0 0 0"
+      ixx="0.00000356" ixy="-0.00000001" ixz="-0.00000037"
+      iyy="0.00000378" iyz="-0.00000016" izz="0.00000034" />
+    <xacro:dofbot_visual mesh_file="left_finger.stl" origin_xyz="0 0 -0.11" origin_rpy="0 0 0" material_name="white_material" />
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_2.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/left_finger_col_3.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_right_joint" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="wrist_roll_link" />
+    <child link="gripper_right_link" />
+    <axis xyz="1 0 0" />
+    <limit lower="-0.03" upper="0.03" effort="5.0" velocity="0.5" />
+    <dynamics damping="0.1" friction="0.05" />
+    <mimic joint="gripper_left_joint" multiplier="-1.0" offset="0.0" />
+  </joint>
+
+  <link name="gripper_right_link">
+    <xacro:dofbot_inertial mass="0.005998"
+      origin_xyz="-0.016626 -0.001230 0.064650" origin_rpy="0 0 0"
+      ixx="0.00000330" ixy="0.00000002" ixz="0.00000032"
+      iyy="0.00000348" iyz="-0.00000022" izz="0.00000032" />
+    <xacro:dofbot_visual mesh_file="right_finger.stl" origin_xyz="0 0 -0.11" origin_rpy="0 0 0" material_name="white_material" />
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_1.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_2.stl" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 -0.11" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dofbot_description/meshes/collision/right_finger_col_3.stl" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ==================== Transmissions ==================== -->
+
+  <transmission name="trans_base_rotation">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_rotation_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_base_rotation">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_upper_arm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="upper_arm_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_upper_arm">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_forearm">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="forearm_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_forearm">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_wrist_pitch">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_pitch_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_wrist_pitch">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_wrist_roll">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wrist_roll_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_wrist_roll">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_gripper_left">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gripper_left_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_gripper_left">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <!-- ==================== Gazebo ==================== -->
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="base_rotation_link">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="upper_arm_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="forearm_link">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="wrist_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="wrist_roll_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+  <gazebo reference="gripper_left_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+  <gazebo reference="gripper_right_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+
+</robot>

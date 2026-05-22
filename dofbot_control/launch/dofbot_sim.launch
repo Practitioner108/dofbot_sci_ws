@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- MuJoCo 仿真 + ros_control 闭环启动
+       用法:
+         roslaunch dofbot_control dofbot_sim.launch               # 带查看器
+         roslaunch dofbot_control dofbot_sim.launch headless:=true  # 无头模式
+  -->
+  <arg name="control_freq" default="50" />
+  <arg name="headless" default="false" />
+
+  <!-- 1. 加载机器人描述 -->
+  <param name="robot_description"
+    command="xacro $(find dofbot_description)/urdf/dofbot.xacro" />
+
+  <!-- 2. 加载控制器参数 -->
+  <rosparam file="$(find dofbot_control)/config/dofbot_control.yaml" command="load" />
+
+  <!-- 3. MuJoCo 仿真节点 -->
+  <include file="$(find dofbot_mujoco)/launch/mujoco_sim.launch">
+    <arg name="headless" value="$(arg headless)" />
+  </include>
+
+  <!-- 4. 硬件节点 (DofbotSimInterface, ROS Topic 桥接) -->
+  <node name="dofbot_hw_node" pkg="dofbot_control" type="dofbot_hw_node" output="screen">
+    <param name="sim_mode" value="true" />
+    <param name="control_freq" value="$(arg control_freq)" />
+  </node>
+
+  <!-- 5. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller dofbot_trajectory_controller" />
+</launch>

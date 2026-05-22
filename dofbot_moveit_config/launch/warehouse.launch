@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
 
   <!-- The path to the database must be specified -->
@@ -7,7 +8,7 @@
   <include file="$(find dofbot_moveit_config)/launch/warehouse_settings.launch.xml" />
 
   <!-- Run the DB server -->
-  <node name="$(anon mongo_wrapper_ros)" cwd="ROS_HOME" type="mongo_wrapper_ros.py" pkg="warehouse_ros_mongo">
+  <node name="$(anon mongo_wrapper_ros)" type="mongo_wrapper_ros.py" pkg="warehouse_ros_mongo">
     <param name="overwrite" value="false"/>
     <param name="database_path" value="$(arg moveit_warehouse_database_path)" />
   </node>

@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
 
   <!-- loads moveit_controller_manager on the parameter server which is taken as argument

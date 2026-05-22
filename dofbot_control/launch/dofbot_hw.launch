@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 物理硬件控制启动
+       用法:
+         roslaunch dofbot_control dofbot_hw.launch
+         roslaunch dofbot_control dofbot_hw.launch control_freq:=100
+  -->
+  <arg name="control_freq" default="50" />
+  <arg name="i2c_device" default="/dev/i2c-1" />
+
+  <!-- 1. 加载机器人描述 -->
+  <param name="robot_description"
+    command="xacro $(find dofbot_description)/urdf/dofbot.xacro" />
+
+  <!-- 2. 加载控制器参数 -->
+  <rosparam file="$(find dofbot_control)/config/dofbot_control.yaml" command="load" />
+
+  <!-- 3. 硬件节点 (DofbotHWInterface, I2C) -->
+  <node name="dofbot_hw_node" pkg="dofbot_control" type="dofbot_hw_node" output="screen">
+    <param name="sim_mode" value="false" />
+    <param name="control_freq" value="$(arg control_freq)" />
+    <param name="i2c_device" value="$(arg i2c_device)" />
+    <param name="i2c_address" value="0x15" />
+  </node>
+
+  <!-- 4. robot_state_publisher: /joint_states → TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="$(arg control_freq)" />
+  </node>
+
+  <!-- 5. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller dofbot_trajectory_controller" />
+</launch>

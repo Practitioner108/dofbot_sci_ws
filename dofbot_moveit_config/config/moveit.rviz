@@ -1,0 +1,71 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+  - Class: rviz/MotionPlanning
+    Name: MotionPlanning
+Visualization Manager:
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+      Plane Cell Count: 10
+      Reference Frame: base_link
+    - Class: rviz/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description
+      Visual Enabled: true
+      Collision Enabled: false
+      Links:
+        All Links Enabled: true
+    - Class: rviz/TF
+      Enabled: false
+      Name: TF
+    - Class: rviz/MotionPlanning
+      Enabled: true
+      Name: MotionPlanning
+      Planning Group: arm
+      Goal State: home
+      Scene Robot:
+        Links:
+          All Links Enabled: true
+      Planned Path:
+        Links:
+          base_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          base_rotation_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          upper_arm_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          forearm_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          wrist_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          wrist_roll_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          gripper_left_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          gripper_right_link:
+            Alpha: 1
+            Color: 50; 150; 50
+      Planning Request:
+        Interactive Marker Size: 0.3
+      Trajectory Topic: /move_group/display_planned_path
+  Global Options:
+    Fixed Frame: base_link
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Target Frame: base_link

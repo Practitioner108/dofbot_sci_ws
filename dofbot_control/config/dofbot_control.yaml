@@ -1,0 +1,34 @@
+# dofbot_control 控制器配置
+# 此文件由 controller_manager 在启动时加载
+
+# 关节状态发布器 (必须)
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+# 位置轨迹控制器 —— 与 MoveIt 输出的 FollowJointTrajectory 对接
+dofbot_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - base_rotation_joint
+    - upper_arm_joint
+    - forearm_joint
+    - wrist_pitch_joint
+    - wrist_roll_joint
+    - gripper_left_joint
+  gains:
+    base_rotation_joint:  { p: 10.0, i: 0.01, d: 1.0 }
+    upper_arm_joint:       { p: 10.0, i: 0.01, d: 1.0 }
+    forearm_joint:         { p: 10.0, i: 0.01, d: 1.0 }
+    wrist_pitch_joint:     { p: 10.0, i: 0.01, d: 1.0 }
+    wrist_roll_joint:      { p: 10.0, i: 0.01, d: 1.0 }
+    gripper_left_joint:    { p: 5.0,  i: 0.01, d: 0.5 }
+  constraints:
+    goal_time: 0.6
+    stopped_velocity_tolerance: 0.05
+    base_rotation_joint:  { goal: 0.1, trajectory: 0.1 }
+    upper_arm_joint:      { goal: 0.1, trajectory: 0.1 }
+    forearm_joint:        { goal: 0.1, trajectory: 0.1 }
+    wrist_pitch_joint:    { goal: 0.1, trajectory: 0.1 }
+    wrist_roll_joint:     { goal: 0.1, trajectory: 0.1 }
+    gripper_left_joint:   { goal: 0.02, trajectory: 0.02 }
