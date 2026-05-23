@@ -53,6 +53,7 @@ class DofbotMujocoSim:
         self.data = mujoco.MjData(self.model)
 
         # 关节映射：MJCF 中的关节名 → ROS joint_states 中的名称
+        # 注意：gripper_right_joint 由 MJCF equality 约束自动镜像，不在此列表
         self.joint_names = [
             'base_rotation_joint',
             'upper_arm_joint',
@@ -60,7 +61,6 @@ class DofbotMujocoSim:
             'wrist_pitch_joint',
             'wrist_roll_joint',
             'gripper_left_joint',
-            'gripper_right_joint',
         ]
 
         # 获取 MuJoCo 关节 ID

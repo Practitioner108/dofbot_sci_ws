@@ -53,7 +53,6 @@ inline double rawToRadian(int raw, const ServoParams& p) {
 
 // 夹爪位置 (米) → raw value 转换 (prismatic joint)
 inline int gripperToRaw(double position_m, const ServoParams& p) {
-    // 夹爪行程: -0.03m ~ +0.03m 映射到 raw 范围
     double stroke_half = 0.03;  // meter
     double ratio = (position_m + stroke_half) / (2.0 * stroke_half);
     double raw_d = p.raw_min + ratio * (p.raw_max - p.raw_min) + p.mid_deviation;
@@ -80,11 +79,14 @@ public:
     void write(const ros::Time& time, const ros::Duration& period) override;
 
 private:
-    // I2C 底层操作 (模拟实现，后续替换为真实 I2C)
+    // MCU 初始化 (主控板型号 + 重启 + 扭矩使能)
+    bool initMCU();
+
+    // I2C 底层操作
     bool i2cOpen();
     void i2cClose();
     bool i2cWriteBlock(uint8_t reg, const uint8_t* data, size_t len);
-    bool i2cReadBlock(uint8_t reg, uint8_t* data, size_t len, int delay_ms = 5);
+    bool i2cReadBlock(uint8_t reg, uint8_t* data, size_t len, int delay_ms = 10);
 
     // 关节数据
     std::vector<std::string> joint_names_;
@@ -104,6 +106,12 @@ private:
     std::string i2c_device_;
     int i2c_addr_;
     int i2c_fd_;
+
+    // 安全与速率控制
+    int read_phase_;            // 0..2 分三轮读取 6 路舵机，避免 I2C 阻塞
+    int consecutive_errors_;    // 连续 I2C 错误计数，达到阈值触发恢复
+    int warmup_cycles_;         // 启动热身计数，期间容忍 raw=0（MCU 首次轮询需时间）
+    bool mcu_initialized_;      // MCU 初始化是否完成
 };
 
 } // namespace dofbot_control

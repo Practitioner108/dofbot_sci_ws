@@ -164,4 +164,10 @@
         <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-5.0 5.0" kp="100"/>
     </actuator>
 
+    <!-- 夹爪镜像：右指跟随左指反向运动，等价于 URDF <mimic multiplier="-1.0" /> -->
+    <equality>
+        <joint joint1="gripper_left_joint" joint2="gripper_right_joint"
+               polycoef="-1 0 0 0 0" />
+    </equality>
+
 </mujoco>
