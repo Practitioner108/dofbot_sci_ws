@@ -272,6 +272,24 @@
     </collision>
   </link>
 
+  <!-- gripper_tcp: 夹爪末端中心虚位点, mimic 跟随 gripper_left_joint -->
+  <joint name="gripper_tcp_joint" type="prismatic">
+    <origin xyz="0 0 0.0925" rpy="0 0 0"/>
+    <parent link="wrist_roll_link"/>
+    <child link="gripper_tcp"/>
+    <axis xyz="0 0 1"/>
+    <mimic joint="gripper_left_joint" multiplier="-0.583" offset="0"/>
+    <limit lower="-0.05" upper="0.20" effort="0" velocity="1"/>
+  </joint>
+
+  <link name="gripper_tcp">
+    <inertial>
+      <mass value="1e-9"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1e-15" ixy="0" ixz="0" iyy="1e-15" iyz="0" izz="1e-15"/>
+    </inertial>
+  </link>
+
   <!-- ==================== Transmissions ==================== -->
 
   <transmission name="trans_base_rotation">

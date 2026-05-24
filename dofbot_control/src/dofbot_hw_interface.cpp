@@ -1,4 +1,5 @@
 #include "dofbot_control/dofbot_hw_interface.h"
+#include <cmath>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -13,6 +14,7 @@ DofbotHWInterface::DofbotHWInterface()
     , consecutive_errors_(0)
     , warmup_cycles_(0)
     , mcu_initialized_(false)
+    , stall_shutdown_(false)
 {}
 
 DofbotHWInterface::~DofbotHWInterface() {
@@ -89,6 +91,18 @@ bool DofbotHWInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
         servo_params_[i] = ServoParams();
     }
     servo_params_[5].setGripper();
+    // 关节 1/2/3 旋转方向与 URDF 的右手定则相反
+    servo_params_[1].direction = -1;  // upper_arm
+    servo_params_[2].direction = -1;  // forearm
+    servo_params_[3].direction = -1;  // wrist_pitch
+
+    // 中位偏差校准: 竖直位姿下各舵机的 raw 偏移量
+    servo_params_[0].mid_deviation = -47;   // base_rotation
+    servo_params_[1].mid_deviation = -47;   // upper_arm
+    servo_params_[2].mid_deviation = -50;   // forearm
+    servo_params_[3].mid_deviation = -47;   // wrist_pitch
+    servo_params_[4].mid_deviation = -562;  // wrist_roll
+    servo_params_[5].mid_deviation = -10;   // gripper
 
     for (size_t i = 0; i < n; ++i) {
         hardware_interface::JointStateHandle js_handle(
@@ -109,6 +123,9 @@ bool DofbotHWInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
     registerInterface(&js_interface_);
     registerInterface(&pj_interface_);
 
+    stall_watch_.resize(n);
+    stall_shutdown_ = false;
+
     robot_hw_nh.param<std::string>("i2c_device", i2c_device_, "/dev/i2c-1");
     robot_hw_nh.param<int>("i2c_address", i2c_addr_, 0x15);
 
@@ -127,7 +144,26 @@ bool DofbotHWInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
     }
     mcu_initialized_ = true;
 
-    ROS_INFO("Running in REAL HARDWARE mode");
+    // 首次读取全部 6 路舵机位置，防止 write() 写入数学零导致机械臂跳动
+    for (int phase = 0; phase < 3; ++phase) {
+        for (int i = phase * 2; i < (phase + 1) * 2 && i < 6; ++i) {
+            uint8_t buf[2] = {0};
+            if (i2cReadBlock(0x31 + i, buf, 2, 15)) {
+                int raw = (buf[0] << 8) | buf[1];
+                if (raw >= 96 && raw <= 4000) {
+                    if (i < 5)
+                        joint_position_[i] = rawToRadian(raw, servo_params_[i]);
+                    else
+                        joint_position_[i] = rawToGripper(raw, servo_params_[i]);
+                    joint_position_command_[i] = joint_position_[i];
+                }
+            }
+        }
+    }
+    warmup_cycles_ = 6;  // 跳过 write() 的热身等待
+    read_phase_ = 0;
+
+    ROS_INFO("Running in REAL HARDWARE mode (initial positions read)");
     return true;
 }
 
@@ -212,13 +248,10 @@ void DofbotHWInterface::read(const ros::Time& time, const ros::Duration& period)
 
 void DofbotHWInterface::write(const ros::Time& time, const ros::Duration& period) {
     if (!mcu_initialized_) return;
+    if (stall_shutdown_) return;
 
     // 启动热身期内不写
     if (warmup_cycles_ < 6) {
-        return;
-    }
-    // 每完整一轮读周期（3 phase = 60ms）才写一次，避免 MCU 读写竞争
-    if (read_phase_ != 0) {
         return;
     }
     // 连续 I2C 错误频繁时不写入
@@ -274,6 +307,64 @@ void DofbotHWInterface::write(const ros::Time& time, const ros::Duration& period
         << raw[0] << " " << raw[1] << " " << raw[2] << " "
         << raw[3] << " " << raw[4] << " " << raw[5]
         << " | time=" << move_time_ms << "ms");
+
+    checkStall();
+}
+
+// ========== 堵转保护 ==========
+
+void DofbotHWInterface::checkStall() {
+    const size_t n = joint_names_.size();
+
+    for (size_t i = 0; i < n; ++i) {
+        double error = std::fabs(joint_position_command_[i] - joint_position_[i]);
+
+        if (i == 5) {
+            // --- 夹爪：仅限位保护（夹紧物体时误差持续存在是正常的）---
+            // 开限位 raw≈1039, 闭限位 raw≈2992, ±50 余量
+            double gap = rawToGripper(0, servo_params_[5]);  // 当前位置的 gap
+            double cmd = joint_position_command_[5];
+            bool at_open_limit  = (gap > 0.025) && (cmd > gap);       // 已全开，还要开
+            bool at_close_limit = (gap < -0.025) && (cmd < gap);      // 已全闭，还要闭
+
+            if ((at_open_limit || at_close_limit) && error > 0.003) {
+                if (stall_watch_[i].error_start.isZero()) {
+                    stall_watch_[i].error_start = ros::Time::now();
+                } else if ((ros::Time::now() - stall_watch_[i].error_start).toSec() > 0.4) {
+                    uint8_t off = 0x00;
+                    i2cWriteBlock(0x1A, &off, 1);
+                    stall_shutdown_ = true;
+                    ROS_FATAL("GRIPPER STALLED at limit (gap=%.4fm, cmd=%.4fm)! Torque disabled.",
+                              gap, cmd);
+                    return;
+                }
+            } else {
+                stall_watch_[i].error_start = ros::Time(0);
+            }
+        } else {
+            // --- 旋转关节：位置跟踪误差检测 ---
+            const double kErrThreshold = 0.12;  // rad ≈ 6.9°
+            const double kTimeWindow   = 0.4;   // 秒
+
+            if (error > kErrThreshold) {
+                if (stall_watch_[i].error_start.isZero()) {
+                    stall_watch_[i].error_start = ros::Time::now();
+                } else if ((ros::Time::now() - stall_watch_[i].error_start).toSec() > kTimeWindow) {
+                    uint8_t off = 0x00;
+                    i2cWriteBlock(0x1A, &off, 1);
+                    stall_shutdown_ = true;
+                    ROS_FATAL("JOINT %s STALLED! cmd=%.3f actual=%.3f error=%.3f rad. "
+                              "Torque disabled.",
+                              joint_names_[i].c_str(),
+                              joint_position_command_[i],
+                              joint_position_[i], error);
+                    return;
+                }
+            } else {
+                stall_watch_[i].error_start = ros::Time(0);
+            }
+        }
+    }
 }
 
 // ========== Linux I2C 底层驱动 ==========
@@ -325,6 +416,12 @@ bool DofbotHWInterface::i2cReadBlock(uint8_t reg, uint8_t* data, size_t len, int
     // 等待 MCU 从 UART 舵机总线读取数据
     if (delay_ms > 0) {
         usleep(delay_ms * 1000);
+    }
+    // 重置 I2C 寄存器指针 (trigger write [reg,0x01] 可能使 MCU 内部指针偏移)
+    uint8_t ptr[1] = {reg};
+    if (::write(i2c_fd_, ptr, 1) != 1) {
+        ROS_WARN("I2C pointer reset failed @ reg 0x%02x: %s", reg, strerror(errno));
+        return false;
     }
     // 读回数据
     ssize_t ret = ::read(i2c_fd_, data, len);

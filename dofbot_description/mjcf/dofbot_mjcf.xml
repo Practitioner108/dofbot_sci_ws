@@ -128,6 +128,8 @@
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_2" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_3" pos="0 0 -0.11"/>
                                 </body>
+
+                                <body name="gripper_tcp" pos="0 0 0"/>
                             </body>
                         </body>
                     </body>
@@ -152,6 +154,11 @@
         <exclude body1="forearm_link" body2="wrist_roll_link"/>
         <exclude body1="forearm_link" body2="gripper_right_link"/>
         <exclude body1="wrist_link" body2="gripper_right_link"/>
+        <exclude body1="gripper_tcp" body2="upper_arm_link"/>
+        <exclude body1="gripper_tcp" body2="forearm_link"/>
+        <exclude body1="gripper_tcp" body2="wrist_link"/>
+        <exclude body1="gripper_tcp" body2="gripper_left_link"/>
+        <exclude body1="gripper_tcp" body2="gripper_right_link"/>
     </contact>
 
     <actuator>

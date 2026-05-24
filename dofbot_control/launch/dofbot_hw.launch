@@ -21,14 +21,22 @@
     <param name="control_freq" value="$(arg control_freq)" />
     <param name="i2c_device" value="$(arg i2c_device)" />
     <param name="i2c_address" value="0x15" />
+    <remap from="joint_states" to="joint_states_raw" />
   </node>
 
-  <!-- 4. robot_state_publisher: /joint_states → TF -->
+  <!-- 4. joint_state_publisher: 读硬件原始 /joint_states_raw,
+       补全 URDF mimic 关节 (gripper_right), 输出标准 /joint_states (7关) -->
+  <node name="mimic_joint_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">[/joint_states_raw]</rosparam>
+    <param name="use_mimic_tag" value="true" />
+  </node>
+
+  <!-- 5. robot_state_publisher: 读标准 /joint_states (7关, mimic 已补全) → TF -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <param name="publish_frequency" value="$(arg control_freq)" />
   </node>
 
-  <!-- 5. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
+  <!-- 6. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner"
         args="joint_state_controller dofbot_trajectory_controller" />
 </launch>

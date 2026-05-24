@@ -3,8 +3,6 @@ Panels:
     Name: Displays
   - Class: rviz/Views
     Name: Views
-  - Class: rviz/MotionPlanning
-    Name: MotionPlanning
 Visualization Manager:
   Displays:
     - Alpha: 0.5
@@ -26,7 +24,7 @@ Visualization Manager:
     - Class: rviz/TF
       Enabled: false
       Name: TF
-    - Class: rviz/MotionPlanning
+    - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Name: MotionPlanning
       Planning Group: arm
@@ -58,6 +56,9 @@ Visualization Manager:
             Alpha: 1
             Color: 50; 150; 50
           gripper_right_link:
+            Alpha: 1
+            Color: 50; 150; 50
+          gripper_tcp:
             Alpha: 1
             Color: 50; 150; 50
       Planning Request:
