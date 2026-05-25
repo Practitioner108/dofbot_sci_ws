@@ -272,14 +272,11 @@
     </collision>
   </link>
 
-  <!-- gripper_tcp: 夹爪末端中心虚位点, mimic 跟随 gripper_left_joint -->
-  <joint name="gripper_tcp_joint" type="prismatic">
+  <!-- gripper_tcp: 末端工具中心点 (TCP)，固定偏移，供 MoveIt IK 计算 -->
+  <joint name="gripper_tcp_joint" type="fixed">
     <origin xyz="0 0 0.0925" rpy="0 0 0"/>
     <parent link="wrist_roll_link"/>
     <child link="gripper_tcp"/>
-    <axis xyz="0 0 1"/>
-    <mimic joint="gripper_left_joint" multiplier="-0.583" offset="0"/>
-    <limit lower="-0.05" upper="0.20" effort="0" velocity="1"/>
   </joint>
 
   <link name="gripper_tcp">

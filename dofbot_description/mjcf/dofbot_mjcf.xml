@@ -129,7 +129,7 @@
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_3" pos="0 0 -0.11"/>
                                 </body>
 
-                                <body name="gripper_tcp" pos="0 0 0">
+                                <body name="gripper_tcp" pos="0 0 0.0925">
                                     <inertial pos="0 0 0" mass="1e-6" diaginertia="1e-10 1e-10 1e-10"/>
                                     <joint name="gripper_tcp_joint" type="slide" axis="0 0 1" range="-0.05 0.20"/>
                                 </body>
@@ -171,11 +171,9 @@
         <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-5.0 5.0" kp="100"/>
     </actuator>
 
-    <!-- gripper_right 镜像: polycoef="offset multiplier 0 0 0" → gripper_right = 0 + (-1)×gripper_left -->
-    <!-- gripper_tcp 跟随:  gripper_tcp  = 0.0925 + (-0.583)×gripper_left -->
+    <!-- gripper_right 镜像: gripper_right = 0 + (-1)×gripper_left -->
     <equality>
         <joint joint1="gripper_right_joint" joint2="gripper_left_joint" polycoef="0 -1 0 0 0"/>
-        <joint joint1="gripper_tcp_joint" joint2="gripper_left_joint" polycoef="0.0925 -0.583 0 0 0"/>
     </equality>
 
 </mujoco>
