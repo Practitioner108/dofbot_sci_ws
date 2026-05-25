@@ -61,11 +61,6 @@ install(DIRECTORY config/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
 
-catkin_install_python(PROGRAMS scripts/mujoco_sim_node.py
+install(PROGRAMS scripts/mujoco_sim_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-# Post-install: catkin_install_python hardcodes detected python path.
-# Patch to system python (conda mujoco 3.8 is incompatible with our meshes).
-install(CODE "execute_process(COMMAND sed -i '1s|^#!.*python3.*|#!/usr/bin/python3|'
-  \${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_BIN_DESTINATION}/mujoco_sim_node.py)")

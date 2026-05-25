@@ -78,10 +78,14 @@ class DofbotMujocoSim:
         # 控制输入缓冲
         self.cmd_positions = np.zeros(self.n_joints)
 
+        # ROS 参数（支持 launch 文件重映射）
+        joint_state_topic = rospy.get_param('~joint_state_topic', '/joint_states_raw')
+        joint_cmd_topic = rospy.get_param('~joint_cmd_topic', '/joint_command')
+
         # ROS 接口
-        self.joint_state_pub = rospy.Publisher('/joint_states_raw', JointState, queue_size=10)
+        self.joint_state_pub = rospy.Publisher(joint_state_topic, JointState, queue_size=10)
         self.clock_pub = rospy.Publisher('/clock', Clock, queue_size=10)
-        self.cmd_sub = rospy.Subscriber('/joint_command', Float64MultiArray, self._cmd_callback)
+        self.cmd_sub = rospy.Subscriber(joint_cmd_topic, Float64MultiArray, self._cmd_callback)
 
         # MuJoCo 查看器
         self.viewer = None
@@ -111,33 +115,37 @@ class DofbotMujocoSim:
 
     def run(self):
         # 物理步进次数 = 模型时间步 / 控制周期
-        ctrl_freq = 50.0
+        ctrl_freq = rospy.get_param('~control_freq', 50.0)
         phys_steps = max(1, int(1.0 / (self.model.opt.timestep * ctrl_freq)))
         rate = rospy.Rate(ctrl_freq)
         rospy.loginfo("MuJoCo simulation at %.0f Hz (phys %d steps/ctrl)",
                       ctrl_freq, phys_steps)
 
-        while not rospy.is_shutdown():
-            if self.viewer is not None and not self.viewer.is_running():
-                break
+        try:
+            while not rospy.is_shutdown():
+                if self.viewer is not None and not self.viewer.is_running():
+                    break
 
-            self._apply_control()
-            for _ in range(phys_steps):
-                mujoco.mj_step(self.model, self.data)
-            self._publish_joint_state()
-            clock_msg = Clock()
-            clock_msg.clock = rospy.Time.from_sec(self.data.time)
-            self.clock_pub.publish(clock_msg)
+                self._apply_control()
+                for _ in range(phys_steps):
+                    mujoco.mj_step(self.model, self.data)
+                self._publish_joint_state()
+                clock_msg = Clock()
+                clock_msg.clock = rospy.Time.from_sec(self.data.time)
+                self.clock_pub.publish(clock_msg)
 
-            if self.viewer is not None:
-                self.viewer.sync()
+                if self.viewer is not None:
+                    self.viewer.sync()
 
-            rate.sleep()
-
-        if self.viewer:
-            self.viewer.close()
-
-        rospy.loginfo("MuJoCo simulation stopped.")
+                rate.sleep()
+        except Exception as e:
+            rospy.logerr("MuJoCo simulation crashed: %s", str(e))
+            import traceback
+            rospy.logerr(traceback.format_exc())
+        finally:
+            if self.viewer:
+                self.viewer.close()
+            rospy.loginfo("MuJoCo simulation stopped.")
 
 
 def main():

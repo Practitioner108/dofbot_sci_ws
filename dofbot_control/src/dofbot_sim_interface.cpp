@@ -44,10 +44,15 @@ bool DofbotSimInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_h
     registerInterface(&js_interface_);
     registerInterface(&pj_interface_);
 
-    // 订阅 MuJoCo 仿真发布的 /joint_states_raw，发布 /joint_command
-    joint_state_sub_ = root_nh.subscribe("/joint_states_raw", 1,
+    // 从参数服务器读取话题名，支持 launch 文件重映射
+    std::string joint_state_topic;
+    std::string joint_cmd_topic;
+    robot_hw_nh.param<std::string>("joint_state_topic", joint_state_topic, "/joint_states_raw");
+    robot_hw_nh.param<std::string>("joint_cmd_topic", joint_cmd_topic, "/joint_command");
+
+    joint_state_sub_ = root_nh.subscribe(joint_state_topic, 1,
                                          &DofbotSimInterface::jointStateCallback, this);
-    joint_cmd_pub_ = root_nh.advertise<std_msgs::Float64MultiArray>("/joint_command", 1);
+    joint_cmd_pub_ = root_nh.advertise<std_msgs::Float64MultiArray>(joint_cmd_topic, 1);
 
     ROS_INFO_STREAM("DofbotSimInterface: " << n << " joints registered");
     ROS_INFO("  Subscribing to /joint_states, publishing to /joint_command");

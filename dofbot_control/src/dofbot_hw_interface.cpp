@@ -194,6 +194,7 @@ void DofbotHWInterface::read(const ros::Time& time, const ros::Duration& period)
             } else if (raw == 0) {
                 // 部分舵机寄存器（尤其是 0x31）首次触发后需二次采样才就绪
                 // 重试一次，延长时间到 15ms
+                bool retry_ok = false;
                 uint8_t retry_buf[2] = {0};
                 if (i2cReadBlock(0x31 + i, retry_buf, 2, 15)) {
                     int retry_raw = (retry_buf[0] << 8) | retry_buf[1];
@@ -203,21 +204,22 @@ void DofbotHWInterface::read(const ros::Time& time, const ros::Duration& period)
                             joint_position_[i] = rawToRadian(raw, servo_params_[i]);
                         else
                             joint_position_[i] = rawToGripper(raw, servo_params_[i]);
-                        goto read_done;
+                        retry_ok = true;
                     }
                 }
                 // 重试失败，容忍策略：热身期放过，否则报错
-                if (warmup_cycles_ < 12) {
-                    ROS_DEBUG_THROTTLE(1.0, "Servo %d raw=0 during warmup, tolerated", i);
-                } else {
-                    ROS_WARN_THROTTLE(5.0, "Servo %d retry also returned 0", i);
-                    any_error = true;
+                if (!retry_ok) {
+                    if (warmup_cycles_ < 12) {
+                        ROS_DEBUG_THROTTLE(1.0, "Servo %d raw=0 during warmup, tolerated", i);
+                    } else {
+                        ROS_WARN_THROTTLE(5.0, "Servo %d retry also returned 0", i);
+                        any_error = true;
+                    }
                 }
-            } else {
-                ROS_WARN_THROTTLE(5.0, "Servo %d raw value out of range: %d", i, raw);
-                any_error = true;
-            }
-            read_done: ;
+        } else {
+            ROS_WARN_THROTTLE(5.0, "Servo %d raw value out of range: %d", i, raw);
+            any_error = true;
+        }
         } else {
             any_error = true;
         }

@@ -4,7 +4,7 @@ project(dofbot_moveit_config)
 find_package(catkin REQUIRED)
 
 catkin_package(
-  CATKIN_DEPENDS dofbot_description
+  CATKIN_DEPENDS dofbot_description dofbot_control
 )
 
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}

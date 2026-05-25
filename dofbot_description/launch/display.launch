@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
     <arg name="xacro" default="$(find dofbot_description)/urdf/dofbot.xacro" />
     <arg name="rviz_config" default="$(find dofbot_description)/rviz/urdf.rviz" />

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mujoco model="dofbot">
-    <compiler angle="radian" meshdir="../meshes/" autolimits="true"/>
+    <compiler angle="radian" meshdir="../meshes/"/>
 
     <option gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic"/>
 

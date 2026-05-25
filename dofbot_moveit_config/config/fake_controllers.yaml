@@ -1,6 +1,6 @@
 controller_list:
   - name: fake_arm_controller
-    type: $(arg execution_type)
+    type: interpolate
     joints:
       - base_rotation_joint
       - upper_arm_joint
@@ -8,7 +8,7 @@ controller_list:
       - wrist_pitch_joint
       - wrist_roll_joint
   - name: fake_gripper_controller
-    type: $(arg execution_type)
+    type: interpolate
     joints:
       - gripper_left_joint
 initial:

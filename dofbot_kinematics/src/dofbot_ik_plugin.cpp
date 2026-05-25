@@ -223,10 +223,13 @@ public:
         }
 
         // RobotState 构造函数在 Noetic 中要求 shared_ptr<RobotModel>。
-        // 此处的 robot_model 由 MoveIt 管理生命周期，使用空删除器避免二次释放。
+        // 此处的 robot_model 由 MoveIt KinematicsPluginLoader 管理生命周期，
+        // 使用空删除器避免二次释放 MoveIt 持有的内存。
         //
-        // 注意：robot_model 引用必须在由此 shared_ptr 创建的所有 RobotState
-        // 销毁之前保持有效。MoveIt 的插件加载机制保证了这个时序。
+        // SAFETY: robot_model 是 const 引用，其生命周期由 MoveIt 插件加载器保证。
+        // KinematicsPluginLoader 在插件卸载时销毁 RobotModel，而插件卸载发生在
+        // 所有使用该 RobotModel 的 RobotState 对象销毁之后——MoveIt 保证此时序。
+        // 因此由本 shared_ptr 创建的临时 RobotState 不会出现 use-after-free。
         std::shared_ptr<const moveit::core::RobotModel> robot_model_ptr(
             &robot_model, [](const moveit::core::RobotModel*){});
         moveit::core::RobotState state(robot_model_ptr);
