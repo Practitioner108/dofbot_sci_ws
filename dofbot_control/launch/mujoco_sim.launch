@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <!--
+    MuJoCo 仿真启动文件
+    用法:
+      roslaunch dofbot_control mujoco_sim.launch           # 带查看器
+      roslaunch dofbot_control mujoco_sim.launch headless:=true  # 无头模式 (用于 ros_control 闭环)
+  -->
+  <arg name="headless" default="false" />
+
+  <node name="dofbot_mujoco_sim" pkg="dofbot_control" type="mujoco_sim_node.py" output="screen">
+    <param name="headless" value="$(arg headless)" />
+  </node>
+</launch>

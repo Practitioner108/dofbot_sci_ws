@@ -1,0 +1,41 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: Grid
+      Plane Cell Count: 10
+      Reference Frame: base_link
+    - Class: rviz/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description
+      Visual Enabled: true
+      Collision Enabled: false
+      Links:
+        All Links Enabled: true
+    - Class: moveit_rviz_plugin/MotionPlanning
+      Enabled: true
+      Name: MotionPlanning
+      Planning Group: arm
+      Goal State: home
+      Scene Robot:
+        Links:
+          All Links Enabled: true
+      Planned Path:
+        Links:
+          All Links Enabled: true
+      Trajectory Topic: /move_group/display_planned_path
+  Global Options:
+    Fixed Frame: base_link
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Target Frame: base_link

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- MuJoCo 仿真 + MoveIt + RViz 一键启动
+       用法:
+         roslaunch dofbot_moveit_config demo_mujoco.launch
+         roslaunch dofbot_moveit_config demo_mujoco.launch headless:=true
+  -->
+  <arg name="headless" default="true"/>
+
+  <!-- 发布 world → base_link (SRDF virtual_joint 要求) -->
+  <node name="world_to_base_link" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 world base_link 100" />
+
+  <!-- MuJoCo 仿真 + ros_control 闭环 -->
+  <include file="$(find dofbot_control)/launch/dofbot_sim.launch">
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  <!-- MoveIt move_group (真实控制器模式) -->
+  <include file="$(find dofbot_moveit_config)/launch/move_group.launch">
+    <arg name="fake_execution" value="false"/>
+  </include>
+
+  <!-- RViz (干净配置, 避免旧缓存) -->
+  <include file="$(find dofbot_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find dofbot_moveit_config)/config/moveit_mujoco.rviz"/>
+  </include>
+</launch>
