@@ -2,7 +2,7 @@
 <mujoco model="dofbot">
     <compiler angle="radian" meshdir="../meshes/"/>
 
-    <option gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic"/>
+    <option gravity="0 0 -9.81" timestep="0.002"/>
 
     <asset>
         <material name="grey_material" rgba="0.7 0.7 0.7 1"/>
@@ -59,6 +59,8 @@
         <geom name="floor" type="plane" size="1 1 0.05" rgba="0.8 0.9 0.8 1" pos="0 0 0"/>
 
         <body name="base_link" pos="0 0 0">
+            <!-- MuJoCo 3.x: 隐式 weld 会锁死子关节。用零范围铰链替代 -->
+            <joint name="base_fix" type="hinge" axis="0 0 1" range="0 0"/>
             <inertial pos="0.000065 -0.048265 0.021267" mass="0.369776"
                       fullinertia="0.00206195 0.00062736 0.00210250 -0.00000069 -0.00000073 -0.00032039"/>
             <geom class="visual" mesh="base_link_vis" material="grey_material"/>
@@ -162,18 +164,16 @@
     </contact>
 
     <actuator>
-        <position name="motor_base_rotation" joint="base_rotation_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
-        <position name="motor_upper_arm" joint="upper_arm_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
-        <position name="motor_forearm" joint="forearm_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
-        <position name="motor_wrist_pitch" joint="wrist_pitch_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
-        <position name="motor_wrist_roll" joint="wrist_roll_joint" ctrlrange="-1.5708 3.1416" forcerange="-1.5 1.5" kp="10"/>
+        <!-- motor 执行器: 纯力驱动 (ctrl = torque in Nm), Python 端做 PD 位置控制
+             避开 MuJoCo 3.x position/general 执行器的隐式约束求解问题 -->
+        <motor name="motor_base_rotation" joint="base_rotation_joint" ctrlrange="-20 20" forcerange="-1.5 1.5"/>
+        <motor name="motor_upper_arm" joint="upper_arm_joint" ctrlrange="-20 20" forcerange="-1.5 1.5"/>
+        <motor name="motor_forearm" joint="forearm_joint" ctrlrange="-20 20" forcerange="-1.5 1.5"/>
+        <motor name="motor_wrist_pitch" joint="wrist_pitch_joint" ctrlrange="-20 20" forcerange="-1.5 1.5"/>
+        <motor name="motor_wrist_roll" joint="wrist_roll_joint" ctrlrange="-20 20" forcerange="-1.5 1.5"/>
 
-        <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-0.6 0.6" kp="100"/>
+        <motor name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-100 100" forcerange="-0.6 0.6"/>
+        <motor name="motor_gripper_right" joint="gripper_right_joint" ctrlrange="-100 100" forcerange="-0.6 0.6"/>
     </actuator>
-
-    <!-- gripper_right 镜像: gripper_right = 0 + (-1)×gripper_left -->
-    <equality>
-        <joint joint1="gripper_right_joint" joint2="gripper_left_joint" polycoef="0 -1 0 0 0"/>
-    </equality>
 
 </mujoco>

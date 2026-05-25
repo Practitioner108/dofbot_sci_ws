@@ -52,7 +52,6 @@ class DofbotMujocoSim:
         self.data = mujoco.MjData(self.model)
 
         # 关节映射：MJCF 中的关节名 → ROS joint_states 中的名称
-        # 注意：gripper_right_joint 由 MJCF equality 约束自动镜像，不在此列表
         self.joint_names = [
             'base_rotation_joint',
             'upper_arm_joint',
@@ -75,8 +74,23 @@ class DofbotMujocoSim:
 
         self.n_joints = len(self.joint_names)
 
-        # 控制输入缓冲
-        self.cmd_positions = np.zeros(self.n_joints)
+        # gripper_right 执行器 ID（由 motor_gripper_right actuator 驱动，
+        # 每个控制周期写 -gripper_left 位置，替代 MuJoCo 3.x 不兼容的 equality）
+        try:
+            self.gripper_right_actuator_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, 'motor_gripper_right')
+            self.gripper_left_joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, 'gripper_left_joint')
+            rospy.loginfo("  Mapped gripper_right actuator -> id %d", self.gripper_right_actuator_id)
+        except Exception:
+            rospy.logerr("motor_gripper_right actuator not found in MJCF")
+            sys.exit(1)
+
+        # PD 控制增益（motor actuator 用 ctrl 直接输出力矩）
+        self.kp = [20.0, 20.0, 20.0, 20.0, 10.0, 100.0, 100.0]
+
+        # 控制输入缓冲 (+1 给 gripper_right actuator)
+        self.cmd_positions = np.zeros(self.n_joints + 1)
 
         # ROS 参数（支持 launch 文件重映射）
         joint_state_topic = rospy.get_param('~joint_state_topic', '/joint_states_raw')
@@ -109,9 +123,13 @@ class DofbotMujocoSim:
         self.joint_state_pub.publish(msg)
 
     def _apply_control(self):
-        """将 /joint_command 中的目标位置写入 MuJoCo 执行器。"""
+        """PD 位置控制: ctrl = kp * (target - qpos)"""
         for i, jid in enumerate(self.mj_joint_ids):
-            self.data.ctrl[i] = self.cmd_positions[i]
+            error = self.cmd_positions[i] - self.data.qpos[jid]
+            self.data.ctrl[i] = self.kp[i] * error
+        # gripper_right 跟踪 gripper_left 的物理位置（镜像）
+        gl_pos = self.data.qpos[self.gripper_left_joint_id]
+        self.data.ctrl[self.gripper_right_actuator_id] = self.kp[5] * (-gl_pos - self.data.qpos[6])
 
     def run(self):
         # 物理步进次数 = 模型时间步 / 控制周期
