@@ -39,5 +39,5 @@
 
   <!-- 6. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="joint_state_controller dofbot_trajectory_controller" />
+        args="--namespace / joint_state_controller dofbot_trajectory_controller" />
 </launch>
