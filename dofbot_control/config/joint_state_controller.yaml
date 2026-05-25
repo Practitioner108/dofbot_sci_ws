@@ -1,0 +1,4 @@
+# 关节状态发布器 — 真机模式需要，将 I2C 读到的舵机状态发布为 ROS topic
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50

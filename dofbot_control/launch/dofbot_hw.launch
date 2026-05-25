@@ -14,6 +14,7 @@
 
   <!-- 2. 加载控制器参数 -->
   <rosparam file="$(find dofbot_control)/config/dofbot_control.yaml" command="load" />
+  <rosparam file="$(find dofbot_control)/config/joint_state_controller.yaml" command="load" />
 
   <!-- 3. 硬件节点 (DofbotHWInterface, I2C) -->
   <node name="dofbot_hw_node" pkg="dofbot_control" type="dofbot_hw_node" output="screen">

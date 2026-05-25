@@ -25,10 +25,9 @@
   <node name="dofbot_hw_node" pkg="dofbot_control" type="dofbot_hw_node" output="screen">
     <param name="sim_mode" value="true" />
     <param name="control_freq" value="$(arg control_freq)" />
-    <remap from="joint_states" to="joint_states_raw" />
   </node>
 
-  <!-- 5. robot_state_publisher: 读标准 /joint_states (8关) → TF (始终运行) -->
+  <!-- 5. robot_state_publisher: 读 /joint_states → TF -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <param name="publish_frequency" value="$(arg control_freq)" />
   </node>
@@ -39,7 +38,7 @@
     <param name="use_mimic_tag" value="true" />
   </node>
 
-  <!-- 7. controller_spawner: 加载并启动 joint_state_controller + dofbot_trajectory_controller -->
+  <!-- 7. controller_spawner: 只启动轨迹控制器（仿真下 joint_state 由 MuJoCo 直接发布） -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="joint_state_controller dofbot_trajectory_controller" />
+        args="dofbot_trajectory_controller" />
 </launch>
