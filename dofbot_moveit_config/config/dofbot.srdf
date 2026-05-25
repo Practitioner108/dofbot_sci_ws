@@ -6,7 +6,6 @@
         <joint name="forearm_joint"/>
         <joint name="wrist_pitch_joint"/>
         <joint name="wrist_roll_joint"/>
-        <joint name="gripper_tcp_joint"/>
     </group>
     <group name="gripper">
         <joint name="gripper_left_joint"/>
@@ -27,7 +26,7 @@
     <group_state name="home_gripper" group="gripper">
         <joint name="gripper_left_joint" value="0"/>
     </group_state>
-    <end_effector name="gripper" parent_link="gripper_tcp" group="gripper" parent_group="arm"/>
+    <end_effector name="gripper" parent_link="wrist_roll_link" group="gripper" parent_group="arm"/>
     <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base_link"/>
     <disable_collisions link1="base_link" link2="base_rotation_link" reason="Adjacent"/>
     <disable_collisions link1="base_link" link2="upper_arm_link" reason="Never"/>

@@ -8,6 +8,7 @@ joint_state_controller:
 
 # 位置轨迹控制器 —— 与 MoveIt 输出的 FollowJointTrajectory 对接
 dofbot_trajectory_controller:
+  allow_partial_joints_goal: true
   type: position_controllers/JointTrajectoryController
   joints:
     - base_rotation_joint

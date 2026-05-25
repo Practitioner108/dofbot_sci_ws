@@ -11,12 +11,12 @@
 
         <mesh name="base_link_vis" file="visual/base_link.stl"/>
         <mesh name="base_rotation_link_vis" file="visual/link1.stl"/>
-        <mesh name="upper_arm_link_vis" file="visual/link2.stl"/>
-        <mesh name="forearm_link_vis" file="visual/link3.stl"/>
-        <mesh name="wrist_link_vis" file="visual/link4.stl"/>
-        <mesh name="wrist_roll_link_vis" file="visual/link5_flange.stl"/>
-        <mesh name="gripper_left_link_vis" file="visual/left_finger.stl"/>
-        <mesh name="gripper_right_link_vis" file="visual/right_finger.stl"/>
+        <mesh name="upper_arm_link_vis" file="visual/link2.obj"/>
+        <mesh name="forearm_link_vis" file="visual/link3.obj"/>
+        <mesh name="wrist_link_vis" file="visual/link4.obj"/>
+        <mesh name="wrist_roll_link_vis" file="visual/link5_flange.obj"/>
+        <mesh name="gripper_left_link_vis" file="visual/left_finger.obj"/>
+        <mesh name="gripper_right_link_vis" file="visual/right_finger.obj"/>
 
         <mesh name="base_link_col_1" file="collision/base_link_col_1.stl"/>
         <mesh name="base_link_col_2" file="collision/base_link_col_2.stl"/>
@@ -69,14 +69,14 @@
             <body name="base_rotation_link" pos="0 0 0.064">
                 <inertial pos="0.000003 0.000000 0.018653" mass="0.052312"
                           fullinertia="0.00001691 0.00002055 0.00001885 0.00000000 -0.00000010 0.00000000"/>
-                <joint name="base_rotation_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708" velocity="3.14"/>
+                <joint name="base_rotation_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708"/>
                 <geom class="visual" mesh="base_rotation_link_vis" material="green_material"/>
                 <geom class="collision" mesh="base_rotation_link_col"/>
 
                 <body name="upper_arm_link" pos="0 0 0.0435" euler="0 1.5708 0">
                     <inertial pos="-0.024890 -0.002259 -0.000080" mass="0.085210"
                               fullinertia="0.00001575 0.00007182 0.00006650 0.00000237 0.00000041 -0.00000002"/>
-                    <joint name="upper_arm_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708" velocity="3.14"/>
+                    <joint name="upper_arm_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708"/>
                     <geom class="visual" mesh="upper_arm_link_vis" material="grey_material"/>
                     <geom class="collision" mesh="upper_arm_link_col_1"/>
                     <geom class="collision" mesh="upper_arm_link_col_2"/>
@@ -84,7 +84,7 @@
                     <body name="forearm_link" pos="-0.08285 0 0">
                         <inertial pos="-0.024890 -0.002259 -0.000650" mass="0.085210"
                                   fullinertia="0.00001575 0.00007182 0.00006650 0.00000237 0.00000039 -0.00000003"/>
-                        <joint name="forearm_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708" velocity="3.14"/>
+                        <joint name="forearm_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708"/>
                         <geom class="visual" mesh="forearm_link_vis" material="green_material"/>
                         <geom class="collision" mesh="forearm_link_col_1"/>
                         <geom class="collision" mesh="forearm_link_col_2"/>
@@ -92,7 +92,7 @@
                         <body name="wrist_link" pos="-0.08285 0 0">
                             <inertial pos="-0.038494 -0.004349 -0.000785" mass="0.160515"
                                       fullinertia="0.00007571 0.00010711 0.00016261 0.00000562 -0.00000005 0.00000063"/>
-                            <joint name="wrist_pitch_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708" velocity="3.14"/>
+                            <joint name="wrist_pitch_joint" type="hinge" axis="0 0 1" range="-1.5708 1.5708"/>
                             <geom class="visual" mesh="wrist_link_vis" material="grey_material"/>
                             <geom class="collision" mesh="wrist_link_col_1"/>
                             <geom class="collision" mesh="wrist_link_col_2"/>
@@ -101,7 +101,7 @@
                             <body name="wrist_roll_link" pos="-0.18385 -0.00215 -0.000605" euler="0 -1.5708 0">
                                 <inertial pos="0.002622 0.017797 0.030802" mass="0.091378"
                                           fullinertia="0.00002550 0.00002286 0.00002965 -0.00000057 -0.00000065 -0.00000404"/>
-                                <joint name="wrist_roll_joint" type="hinge" axis="0 0 1" range="-1.5708 3.1416" velocity="3.14"/>
+                                <joint name="wrist_roll_joint" type="hinge" axis="0 0 1" range="-1.5708 3.1416"/>
 
                                 <camera name="eye_in_hand" pos="0 0.05 -0.05" fovy="110"/>
 
@@ -112,7 +112,7 @@
                                 <body name="gripper_left_link" pos="0 0 0">
                                     <inertial pos="0.016595 -0.001857 0.062980" mass="0.006329"
                                               fullinertia="0.00000356 0.00000378 0.00000034 -0.00000001 -0.00000037 -0.00000016"/>
-                                    <joint name="gripper_left_joint" type="slide" axis="1 0 0" range="-0.03 0.03" velocity="0.5"/>
+                                    <joint name="gripper_left_joint" type="slide" axis="1 0 0" range="-0.03 0.03"/>
                                     <geom class="visual" mesh="gripper_left_link_vis" material="white_material" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_left_link_col_1" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_left_link_col_2" pos="0 0 -0.11"/>
@@ -122,14 +122,17 @@
                                 <body name="gripper_right_link" pos="0 0 0">
                                     <inertial pos="-0.016626 -0.001230 0.064650" mass="0.005998"
                                               fullinertia="0.00000330 0.00000348 0.00000032 0.00000002 0.00000032 -0.00000022"/>
-                                    <joint name="gripper_right_joint" type="slide" axis="1 0 0" range="-0.03 0.03" velocity="0.5"/>
+                                    <joint name="gripper_right_joint" type="slide" axis="1 0 0" range="-0.03 0.03"/>
                                     <geom class="visual" mesh="gripper_right_link_vis" material="white_material" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_1" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_2" pos="0 0 -0.11"/>
                                     <geom class="silicone_pad" mesh="gripper_right_link_col_3" pos="0 0 -0.11"/>
                                 </body>
 
-                                <body name="gripper_tcp" pos="0 0 0"/>
+                                <body name="gripper_tcp" pos="0 0 0">
+                                    <inertial pos="0 0 0" mass="1e-6" diaginertia="1e-10 1e-10 1e-10"/>
+                                    <joint name="gripper_tcp_joint" type="slide" axis="0 0 1" range="-0.05 0.20"/>
+                                </body>
                             </body>
                         </body>
                     </body>
@@ -138,9 +141,6 @@
         </body>
     </worldbody>
 
-    <equality>
-        <joint joint1="gripper_right_joint" joint2="gripper_left_joint" polycoef="0 -1 0 0 0"/>
-    </equality>
 
     <contact>
         <exclude body1="base_link" body2="upper_arm_link"/>
@@ -171,10 +171,11 @@
         <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-5.0 5.0" kp="100"/>
     </actuator>
 
-    <!-- 夹爪镜像：右指跟随左指反向运动，等价于 URDF <mimic multiplier="-1.0" /> -->
+    <!-- gripper_right 镜像: polycoef="offset multiplier 0 0 0" → gripper_right = 0 + (-1)×gripper_left -->
+    <!-- gripper_tcp 跟随:  gripper_tcp  = 0.0925 + (-0.583)×gripper_left -->
     <equality>
-        <joint joint1="gripper_left_joint" joint2="gripper_right_joint"
-               polycoef="-1 0 0 0 0" />
+        <joint joint1="gripper_right_joint" joint2="gripper_left_joint" polycoef="0 -1 0 0 0"/>
+        <joint joint1="gripper_tcp_joint" joint2="gripper_left_joint" polycoef="0.0925 -0.583 0 0 0"/>
     </equality>
 
 </mujoco>

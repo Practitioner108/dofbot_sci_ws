@@ -16,7 +16,7 @@
   <rosparam file="$(find dofbot_control)/config/dofbot_control.yaml" command="load" />
 
   <!-- 3. MuJoCo 仿真节点 -->
-  <include file="$(find dofbot_mujoco)/launch/mujoco_sim.launch">
+  <include file="$(find dofbot_control)/launch/mujoco_sim.launch">
     <arg name="headless" value="$(arg headless)" />
   </include>
 
@@ -26,7 +26,20 @@
     <param name="control_freq" value="$(arg control_freq)" />
   </node>
 
-  <!-- 5. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="joint_state_controller dofbot_trajectory_controller" />
+  <!-- 5. robot_state_publisher: 读标准 /joint_states (8关) → TF (始终运行) -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" value="100.0" />
+  </node>
+
+  <!-- 6. mimic_joint_publisher: 从 MuJoCo /joint_states_raw 补全 URDF mimic → /joint_states -->
+  <node name="mimic_joint_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">[/joint_states_raw]</rosparam>
+    <param name="use_mimic_tag" value="true" />
+  </node>
+
+  <!-- 7. 加载并启动 dofbot_trajectory_controller -->
+  <node name="load_controller" pkg="rosservice" type="rosservice"
+        args="call --wait /controller_manager/load_controller &quot;name: 'dofbot_trajectory_controller'&quot;" />
+  <node name="start_controller" pkg="rosservice" type="rosservice"
+        args="call --wait /controller_manager/switch_controller &quot;start_controllers: ['dofbot_trajectory_controller']&quot; &quot;stop_controllers: ['']&quot; &quot;strictness: 1&quot;" />
 </launch>

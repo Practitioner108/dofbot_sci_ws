@@ -44,8 +44,8 @@ bool DofbotSimInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_h
     registerInterface(&js_interface_);
     registerInterface(&pj_interface_);
 
-    // 订阅 MuJoCo 仿真发布的 /joint_states，发布 /joint_command
-    joint_state_sub_ = root_nh.subscribe("/joint_states", 1,
+    // 订阅 MuJoCo 仿真发布的 /joint_states_raw，发布 /joint_command
+    joint_state_sub_ = root_nh.subscribe("/joint_states_raw", 1,
                                          &DofbotSimInterface::jointStateCallback, this);
     joint_cmd_pub_ = root_nh.advertise<std_msgs::Float64MultiArray>("/joint_command", 1);
 

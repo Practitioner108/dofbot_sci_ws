@@ -20,6 +20,7 @@
   <depend>std_msgs</depend>
   <depend>joint_limits_interface</depend>
   <depend>urdf</depend>
+  <depend>rospy</depend>
 
   <export>
   </export>
