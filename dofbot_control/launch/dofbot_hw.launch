@@ -39,5 +39,7 @@
 
   <!-- 6. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="--namespace / joint_state_controller dofbot_trajectory_controller" />
+        args="--namespace / joint_state_controller dofbot_trajectory_controller">
+    <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
+  </node>
 </launch>

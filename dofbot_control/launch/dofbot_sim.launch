@@ -40,5 +40,7 @@
 
   <!-- 7. controller_spawner: 只启动轨迹控制器（仿真下 joint_state 由 MuJoCo 直接发布） -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="--namespace / dofbot_trajectory_controller" />
+        args="--namespace / dofbot_trajectory_controller">
+    <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
+  </node>
 </launch>
