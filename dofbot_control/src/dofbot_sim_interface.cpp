@@ -55,7 +55,7 @@ bool DofbotSimInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_h
     joint_cmd_pub_ = root_nh.advertise<std_msgs::Float64MultiArray>(joint_cmd_topic, 1);
 
     ROS_INFO_STREAM("DofbotSimInterface: " << n << " joints registered");
-    ROS_INFO("  Subscribing to /joint_states, publishing to /joint_command");
+    ROS_INFO_STREAM("  Subscribing to " << joint_state_topic << ", publishing to " << joint_cmd_topic);
     return true;
 }
 
