@@ -162,13 +162,13 @@
     </contact>
 
     <actuator>
-        <position name="motor_base_rotation" joint="base_rotation_joint" ctrlrange="-1.5708 1.5708" forcerange="-0.3 0.3" kp="20"/>
-        <position name="motor_upper_arm" joint="upper_arm_joint" ctrlrange="-1.5708 1.5708" forcerange="-0.3 0.3" kp="20"/>
-        <position name="motor_forearm" joint="forearm_joint" ctrlrange="-1.5708 1.5708" forcerange="-0.3 0.3" kp="20"/>
-        <position name="motor_wrist_pitch" joint="wrist_pitch_joint" ctrlrange="-1.5708 1.5708" forcerange="-0.3 0.3" kp="20"/>
-        <position name="motor_wrist_roll" joint="wrist_roll_joint" ctrlrange="-1.5708 3.1416" forcerange="-0.3 0.3" kp="10"/>
+        <position name="motor_base_rotation" joint="base_rotation_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
+        <position name="motor_upper_arm" joint="upper_arm_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
+        <position name="motor_forearm" joint="forearm_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
+        <position name="motor_wrist_pitch" joint="wrist_pitch_joint" ctrlrange="-1.5708 1.5708" forcerange="-1.5 1.5" kp="20"/>
+        <position name="motor_wrist_roll" joint="wrist_roll_joint" ctrlrange="-1.5708 3.1416" forcerange="-1.5 1.5" kp="10"/>
 
-        <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-5.0 5.0" kp="100"/>
+        <position name="motor_gripper_left" joint="gripper_left_joint" ctrlrange="-0.03 0.03" forcerange="-0.6 0.6" kp="100"/>
     </actuator>
 
     <!-- gripper_right 镜像: gripper_right = 0 + (-1)×gripper_left -->
