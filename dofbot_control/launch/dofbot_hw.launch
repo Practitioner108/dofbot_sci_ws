@@ -42,4 +42,7 @@
         args="--namespace / joint_state_controller dofbot_trajectory_controller">
     <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
   </node>
+
+  <!-- 7. 眼在手上的 USB 摄像头 -->
+  <include file="$(find dofbot_control)/launch/camera.launch"/>
 </launch>
