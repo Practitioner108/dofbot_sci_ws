@@ -7,8 +7,10 @@
       roslaunch dofbot_control mujoco_sim.launch headless:=true  # 无头模式 (用于 ros_control 闭环)
   -->
   <arg name="headless" default="false" />
+  <arg name="control_freq" default="50" />
 
   <node name="dofbot_mujoco_sim" pkg="dofbot_control" type="mujoco_sim_node.py" output="screen">
     <param name="headless" value="$(arg headless)" />
+    <param name="control_freq" value="$(arg control_freq)" />
   </node>
 </launch>

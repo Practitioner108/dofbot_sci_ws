@@ -18,12 +18,14 @@
   <!-- 3. MuJoCo 仿真节点 -->
   <include file="$(find dofbot_control)/launch/mujoco_sim.launch">
     <arg name="headless" value="$(arg headless)" />
+    <arg name="control_freq" value="$(arg control_freq)" />
   </include>
 
   <!-- 4. 硬件节点 (DofbotSimInterface, ROS Topic 桥接) -->
   <node name="dofbot_hw_node" pkg="dofbot_control" type="dofbot_hw_node" output="screen">
     <param name="sim_mode" value="true" />
     <param name="control_freq" value="$(arg control_freq)" />
+    <remap from="joint_states" to="joint_states_raw" />
   </node>
 
   <!-- 5. robot_state_publisher: 读标准 /joint_states (8关) → TF (始终运行) -->

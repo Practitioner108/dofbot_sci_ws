@@ -17,7 +17,7 @@ joint_state_controller:
 # MoveIt 通过此列表查找 FollowJointTrajectory 控制器
 # 控制器名必须与 dofbot_control/config/dofbot_control.yaml 中定义的一致
 controller_list:
-  - name: dofbot_trajectory_controller
+  - name: /dofbot_trajectory_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: true
