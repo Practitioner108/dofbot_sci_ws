@@ -27,7 +27,14 @@ DOFBOT 5-DOF 机械臂的 ros_control 硬件接口与控制系统。同时支持
 | wrist_roll 中位 | 0 raw | **−562 raw** | 最严重 |
 | 角度映射系数 | 1.0× | 1.11× ~ 1.22× | 指令 90° 实际转 100°~120° |
 
-**结论：不标定直接用，机械臂根本无法到达指定位置。** 标定通过 `ServoParams` 中的 `angle_min_deg`、`angle_max_deg`、`mid_deviation`、`direction` 四项修正，已在代码中完成。
+**结论：不标定直接用，机械臂根本无法到达指定位置。**
+
+> **⚠️ 注意：** 上表中的实测值为本作者机械臂的个体数据。DS-SY15A 舵机出厂一致性较差，**每台机械臂的中位偏差和行程系数均不同**。若在你的硬件上使用本代码，务必自行标定以下四项参数：
+> - `angle_min_deg` / `angle_max_deg` — 舵机实际行程
+> - `mid_deviation` — 中位偏差（手机量角器或激光标定）
+> - `direction` — 旋转方向（±1）
+>
+> 标定数据写入 `DofbotHWInterface::init()` 中的 `ServoParams` 即可。URDF 关节限位也需同步更新。
 
 ### 问题二：扩展板 MCU 固件的三个致命限制
 
