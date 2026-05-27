@@ -50,12 +50,14 @@ dofbot_description/
 - 描述性关节/连杆命名（`base_rotation_joint`、`forearm_link` 等）
 - 完整的碰撞几何体（20 个简化碰撞网格）
 - 所有 6 个驱动关节的 ros_control transmission 定义
-- Gazebo 集成（材质 + ros_control 插件）
-- MuJoCo 仿真模型（`mjcf/`）
+- Gazebo + MuJoCo 双仿真支持
 - 完整的安装规则，支持 `catkin build --install` 部署
+- 眼在手上 USB 摄像头 URDF/SRDF 定义
 
 ## 许可证
 
 本包基于 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 开源。
+
+版权所有 (c) 2025 Tu Zhichao
 
 Yahboom 原始基础数据同样为开源协议。详见上游项目。

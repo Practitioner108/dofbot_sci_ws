@@ -3,8 +3,8 @@
   <name>dofbot_moveit_config</name>
   <version>0.3.0</version>
   <description>
-    MoveIt configuration for the DOFBOT 5-DOF desktop robotic arm, including launch files,
-    planners, kinematics, joint limits, and RViz configuration.
+    MoveIt configuration for the DOFBOT 5-DOF desktop arm — MuJoCo/Gazebo demo launch files,
+    OMPL/CHOMP/Pilz planners, analytic IK plugin wiring, joint limits, controllers, and RViz configs.
   </description>
 
   <maintainer email="3954058022@qq.com">Tu Zhichao</maintainer>
