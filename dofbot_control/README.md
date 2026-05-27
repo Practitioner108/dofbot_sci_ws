@@ -171,4 +171,4 @@ dofbot_control/
 
 ## 许可证
 
-Apache License, Version 2.0 — 版权所有 (c) 2025 Tu Zhichao
+Apache License, Version 2.0 — 版权所有 (c) 2026 Tu Zhichao

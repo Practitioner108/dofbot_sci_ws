@@ -58,6 +58,6 @@ dofbot_description/
 
 本包基于 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 开源。
 
-版权所有 (c) 2025 Tu Zhichao
+版权所有 (c) 2026 Tu Zhichao
 
 Yahboom 原始基础数据同样为开源协议。详见上游项目。
