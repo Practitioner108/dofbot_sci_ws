@@ -71,11 +71,13 @@
   </group>
 
   <!-- Trajectory Execution Functionality -->
+  <arg name="controller_config" default="ros_controllers" />
   <include ns="move_group" file="$(find dofbot_moveit_config)/launch/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_manage_controllers" value="true" />
     <arg name="moveit_controller_manager" value="dofbot" unless="$(arg fake_execution)"/>
     <arg name="moveit_controller_manager" value="fake" if="$(arg fake_execution)"/>
     <arg name="execution_type" value="$(arg execution_type)" />
+    <arg name="controller_config" value="$(arg controller_config)" />
   </include>
 
   <!-- Sensors Functionality -->

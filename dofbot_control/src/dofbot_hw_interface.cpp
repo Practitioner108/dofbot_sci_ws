@@ -85,12 +85,26 @@ bool DofbotHWInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
     joint_velocity_.resize(n, 0.0);
     joint_effort_.resize(n, 0.0);
     joint_position_command_.resize(n, 0.0);
+    last_written_command_.resize(n, 0.0);
 
     servo_params_.resize(n);
     for (size_t i = 0; i < 5; ++i) {
         servo_params_[i] = ServoParams();
     }
     servo_params_[5].setGripper();
+
+    // 舵机行程标定: DS-SY15A 实际量程 ≠ 标准 270°，按激光/手机实测修正
+    servo_params_[0].angle_min_deg = -150.0;  // base_rotation, 1.11×
+    servo_params_[0].angle_max_deg =  150.0;
+    servo_params_[1].angle_min_deg = -162.0;  // upper_arm, 1.20×
+    servo_params_[1].angle_max_deg =  162.0;
+    servo_params_[2].angle_min_deg = -163.0;  // forearm, 1.21×
+    servo_params_[2].angle_max_deg =  163.0;
+    servo_params_[3].angle_min_deg = -162.0;  // wrist_pitch, 1.20×
+    servo_params_[3].angle_max_deg =  162.0;
+    servo_params_[4].angle_min_deg = -165.0;  // wrist_roll, 1.22×
+    servo_params_[4].angle_max_deg =  165.0;
+
     // 关节 1/2/3 旋转方向与 URDF 的右手定则相反
     servo_params_[1].direction = -1;  // upper_arm
     servo_params_[2].direction = -1;  // forearm
@@ -174,7 +188,7 @@ void DofbotHWInterface::read(const ros::Time& time, const ros::Duration& period)
     // Phase 0: 舵机 0,1 (寄存器 0x31, 0x32)
     // Phase 1: 舵机 2,3 (寄存器 0x33, 0x34)
     // Phase 2: 舵机 4,5 (寄存器 0x35, 0x36)
-    // 每轮 2×10ms = 20ms，适配 50Hz 控制周期
+    // 每轮 2×5ms = 10ms，手册最低 5ms，节省 10ms 适配 50Hz
 
     int start_servo = read_phase_ * 2;  // 0, 2, or 4
     read_phase_ = (read_phase_ + 1) % 3;
@@ -183,7 +197,7 @@ void DofbotHWInterface::read(const ros::Time& time, const ros::Duration& period)
     for (int i = start_servo; i < start_servo + 2 && i < 6; ++i) {
         uint8_t buf[2] = {0};
         // 手册要求：先写触发字节，延迟 ≥5ms（取 10ms 更可靠），再读 2 字节
-        if (i2cReadBlock(0x31 + i, buf, 2, 10)) {
+        if (i2cReadBlock(0x31 + i, buf, 2, 5)) {
             int raw = (buf[0] << 8) | buf[1];
             // 校验 raw 值范围
             if (raw >= 96 && raw <= 4000) {
@@ -264,11 +278,26 @@ void DofbotHWInterface::write(const ros::Time& time, const ros::Duration& period
 
     const size_t n = joint_names_.size();
 
+    // 死区过滤：所有关节指令变化均 < 0.005rad 则跳过本周期，避免无效微调打断舵机
+    // 舵机精度 1°(0.017rad)，0.005rad 远低于其分辨率，过滤不会影响精度
+    const double kDeadband = 0.005;
+    bool all_below_deadband = true;
+    for (size_t i = 0; i < n; ++i) {
+        if (std::fabs(joint_position_command_[i] - last_written_command_[i]) > kDeadband) {
+            all_below_deadband = false;
+            break;
+        }
+    }
+    if (all_below_deadband) return;
+
     int raw[6];
     for (size_t i = 0; i < 5; ++i) {
         raw[i] = radianToRaw(joint_position_command_[i], servo_params_[i]);
     }
     raw[5] = gripperToRaw(joint_position_command_[5], servo_params_[5]);
+    for (size_t i = 0; i < n; ++i) {
+        last_written_command_[i] = joint_position_command_[i];
+    }
 
     // 最终安全检查：确保 raw 值在有效范围
     for (size_t i = 0; i < n; ++i) {
@@ -287,9 +316,8 @@ void DofbotHWInterface::write(const ros::Time& time, const ros::Duration& period
         buf_0x1d[2 * i + 1] = static_cast<uint8_t>(raw[i] & 0xFF);
     }
 
-    // 运行时间 (ms)，不小于 30ms（手册默认 500ms，最低 20ms，取 30ms 安全）
-    int move_time_ms = static_cast<int>(period.toSec() * 1000.0);
-    if (move_time_ms < 30) move_time_ms = 30;
+    // 固定 20ms = 控制周期，配合死区过滤阻断无效微调
+    int move_time_ms = 20;
     uint8_t buf_0x1e[2] = {
         static_cast<uint8_t>((move_time_ms >> 8) & 0xFF),
         static_cast<uint8_t>(move_time_ms & 0xFF)

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Waypoint Executor 真机模式 + MoveIt + RViz 一键启动
+       用法:
+         roslaunch dofbot_control dofbot_waypoint.launch
+         roslaunch dofbot_control dofbot_waypoint.launch control_freq:=50
+
+       与 demo_mujoco.launch 的区别:
+       - 不启动 MuJoCo 仿真
+       - 不加载 dofbot_trajectory_controller (FollowJointTrajectory)
+       - 启动 waypoint_executor.py 代替 (直连 I2C 舵机)
+  -->
+
+  <arg name="control_freq" default="50" />
+
+  <!-- 1. 启动 ros_control 硬件层 (仅 joint_state_controller, 不加载轨迹控制器) -->
+  <include file="$(find dofbot_control)/launch/dofbot_hw.launch">
+    <arg name="load_trajectory_controller" value="false" />
+    <arg name="control_freq" value="$(arg control_freq)" />
+  </include>
+
+  <!-- 2. Waypoint Executor: 接收 MoveIt 轨迹 → 逐点 I2C 驱动舵机 -->
+  <node name="waypoint_executor" pkg="dofbot_control" type="waypoint_executor.py"
+        output="screen">
+    <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
+  </node>
+
+  <!-- 3. MoveIt move_group (使用 waypoint 控制器配置) -->
+  <include file="$(find dofbot_moveit_config)/launch/move_group.launch">
+    <arg name="fake_execution" value="false"/>
+    <arg name="controller_config" value="ros_controllers_waypoint"/>
+  </include>
+
+  <!-- 4. RViz -->
+  <include file="$(find dofbot_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find dofbot_moveit_config)/config/moveit_mujoco.rviz"/>
+  </include>
+</launch>

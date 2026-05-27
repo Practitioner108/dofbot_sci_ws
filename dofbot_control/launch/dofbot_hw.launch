@@ -7,6 +7,7 @@
   -->
   <arg name="control_freq" default="50" />
   <arg name="i2c_device" default="/dev/i2c-1" />
+  <arg name="load_trajectory_controller" default="true" />
 
   <!-- 1. 加载机器人描述 -->
   <param name="robot_description"
@@ -37,9 +38,13 @@
     <param name="publish_frequency" value="$(arg control_freq)" />
   </node>
 
-  <!-- 6. controller_spawner: 启动 joint_state_controller + dofbot_trajectory_controller -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner"
-        args="--namespace / joint_state_controller dofbot_trajectory_controller">
+  <!-- 6. controller_spawner: 等待 controller_manager 就绪后加载控制器 -->
+  <node name="controller_spawner" pkg="dofbot_control" type="wait_and_spawn.sh"
+        args="joint_state_controller" if="$(eval not arg('load_trajectory_controller'))">
+    <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
+  </node>
+  <node name="controller_spawner" pkg="dofbot_control" type="wait_and_spawn.sh"
+        args="joint_state_controller dofbot_trajectory_controller" if="$(arg load_trajectory_controller)">
     <env name="PATH" value="/usr/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/bin" />
   </node>
 

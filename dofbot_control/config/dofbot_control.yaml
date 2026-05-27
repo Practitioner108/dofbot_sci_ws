@@ -22,11 +22,11 @@ dofbot_trajectory_controller:
     wrist_roll_joint:      { p: 0.0, i: 0.0, d: 0.0 }
     gripper_left_joint:    { p: 0.0, i: 0.0, d: 0.0 }
   constraints:
-    goal_time: 0.6
-    stopped_velocity_tolerance: 0.05
-    base_rotation_joint:  { goal: 0.1, trajectory: 0.1 }
-    upper_arm_joint:      { goal: 0.1, trajectory: 0.1 }
-    forearm_joint:        { goal: 0.1, trajectory: 0.1 }
-    wrist_pitch_joint:    { goal: 0.1, trajectory: 0.1 }
-    wrist_roll_joint:     { goal: 0.1, trajectory: 0.1 }
-    gripper_left_joint:   { goal: 0.02, trajectory: 0.02 }
+    goal_time: 1.0
+    stopped_velocity_tolerance: 0.5
+    base_rotation_joint:  { goal: 0.15, trajectory: 0.5 }
+    upper_arm_joint:      { goal: 0.15, trajectory: 0.25 }
+    forearm_joint:        { goal: 0.15, trajectory: 0.25 }
+    wrist_pitch_joint:    { goal: 0.15, trajectory: 0.25 }
+    wrist_roll_joint:     { goal: 0.15, trajectory: 0.25 }
+    gripper_left_joint:   { goal: 0.02, trajectory: 0.1 }

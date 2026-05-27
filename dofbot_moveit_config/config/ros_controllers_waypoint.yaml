@@ -1,0 +1,30 @@
+# Settings for ros_control hardware interface (Waypoint Executor 模式)
+# 与 ros_controllers.yaml 的唯一区别：控制器名指向 waypoint_executor
+hardware_interface:
+  joints:
+    - base_rotation_joint
+    - upper_arm_joint
+    - forearm_joint
+    - wrist_pitch_joint
+    - wrist_roll_joint
+    - gripper_left_joint
+  sim_control_mode: 1  # 0: position, 1: velocity
+
+# Publish all joint states
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+# MoveIt 通过此列表查找 FollowJointTrajectory 控制器
+controller_list:
+  - name: /waypoint_executor
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - base_rotation_joint
+      - upper_arm_joint
+      - forearm_joint
+      - wrist_pitch_joint
+      - wrist_roll_joint
+      - gripper_left_joint

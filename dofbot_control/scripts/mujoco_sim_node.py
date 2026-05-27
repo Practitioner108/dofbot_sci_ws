@@ -81,9 +81,12 @@ class DofbotMujocoSim:
                 self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, 'motor_gripper_right')
             self.gripper_left_joint_id = mujoco.mj_name2id(
                 self.model, mujoco.mjtObj.mjOBJ_JOINT, 'gripper_left_joint')
-            rospy.loginfo("  Mapped gripper_right actuator -> id %d", self.gripper_right_actuator_id)
+            self.gripper_right_joint_id = mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, 'gripper_right_joint')
+            rospy.loginfo("  Mapped gripper_right actuator -> id %d, joint -> id %d",
+                          self.gripper_right_actuator_id, self.gripper_right_joint_id)
         except Exception:
-            rospy.logerr("motor_gripper_right actuator not found in MJCF")
+            rospy.logerr("motor_gripper_right actuator or gripper_right_joint not found in MJCF")
             sys.exit(1)
 
         # PD 控制增益（motor actuator 用 ctrl 直接输出力矩）
@@ -125,11 +128,14 @@ class DofbotMujocoSim:
     def _apply_control(self):
         """PD 位置控制: ctrl = kp * (target - qpos)"""
         for i, jid in enumerate(self.mj_joint_ids):
-            error = self.cmd_positions[i] - self.data.qpos[jid]
+            qpos_adr = self.model.jnt_qposadr[jid]
+            error = self.cmd_positions[i] - self.data.qpos[qpos_adr]
             self.data.ctrl[i] = self.kp[i] * error
-        # gripper_right 跟踪 gripper_left 的物理位置（镜像）
-        gl_pos = self.data.qpos[self.gripper_left_joint_id]
-        self.data.ctrl[self.gripper_right_actuator_id] = self.kp[5] * (-gl_pos - self.data.qpos[6])
+        # gripper_right 镜像 gripper_left 目标位置
+        right_target = -self.cmd_positions[5]
+        right_adr = self.model.jnt_qposadr[self.gripper_right_joint_id]
+        right_error = right_target - self.data.qpos[right_adr]
+        self.data.ctrl[self.gripper_right_actuator_id] = self.kp[5] * right_error
 
     def run(self):
         # 物理步进次数 = 模型时间步 / 控制周期

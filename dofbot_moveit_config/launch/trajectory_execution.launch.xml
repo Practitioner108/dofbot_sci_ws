@@ -18,8 +18,10 @@
 
   <!-- Load the robot specific controller manager; this sets the moveit_controller_manager ROS parameter -->
   <arg name="moveit_controller_manager" default="dofbot" />
+  <arg name="controller_config" default="ros_controllers" />
   <include file="$(find dofbot_moveit_config)/launch/$(arg moveit_controller_manager)_moveit_controller_manager.launch.xml">
     <arg name="execution_type" value="$(arg execution_type)" />
+    <arg name="controller_config" value="$(arg controller_config)" />
   </include>
 
 </launch>

@@ -2,10 +2,11 @@
 <launch>
 
   <arg name="execution_type" default="interpolate" />
+  <arg name="controller_config" default="ros_controllers" />
 
   <!-- loads moveit_controller_manager on the parameter server -->
   <param name="moveit_controller_manager" value="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
 
   <!-- loads ros_controllers to the param server -->
-  <rosparam file="$(find dofbot_moveit_config)/config/ros_controllers.yaml"/>
+  <rosparam file="$(find dofbot_moveit_config)/config/$(arg controller_config).yaml"/>
 </launch>

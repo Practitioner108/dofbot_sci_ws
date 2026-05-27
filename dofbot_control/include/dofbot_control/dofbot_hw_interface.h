@@ -136,6 +136,7 @@ private:
     std::vector<double> joint_velocity_;
     std::vector<double> joint_effort_;
     std::vector<double> joint_position_command_;
+    std::vector<double> last_written_command_;  // 死区过滤用，记录上次实际写入的指令值
 
     // 舵机参数
     std::vector<ServoParams> servo_params_;
