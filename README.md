@@ -2,6 +2,8 @@
 
 5-DOF 桌面级机械臂（含夹爪）的 ROS 1 Noetic 工作空间。支持 **MuJoCo 仿真** 与 **真实硬件（I2C 舵机）** 双模式运行，集成 MoveIt 运动规划。
 
+![DOFBOT](dofbot_description/doc/images/DOFBOT示意图.jpg)
+
 ## 系统架构
 
 ```
